@@ -1,11 +1,12 @@
-'use server';
+"use server";
 
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
-import connectDB from '@/lib/db';
-import Product from '@/models/Product';
-import { revalidatePath } from 'next/cache';
-import { z } from 'zod';
+import { writeFile, mkdir } from "fs/promises";
+import path from "path";
+import connectDB from "@/lib/db";
+import Product from "@/models/Product";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
+import Stripe from "stripe";
 
 // Definimos la interfaz para el objeto de actualización
 interface UpdatePayload {
@@ -22,7 +23,6 @@ const productUpdateSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
   price: z.number().min(0),
-  stripeId: z.string().min(1),
   inStock: z.boolean(),
 });
 
@@ -30,18 +30,18 @@ export async function updateProduct(prevState: unknown, formData: FormData) {
   try {
     await connectDB();
 
-    const id = formData.get('id') as string;
-    const files = formData.getAll('images') as File[];
-    
+    const id = formData.get("id") as string;
+    const files = formData.getAll("images") as File[];
+
     const uploadedUrls: string[] = [];
-    const uploadDir = path.join(process.cwd(), 'public/uploads');
+    const uploadDir = path.join(process.cwd(), "public/uploads");
     await mkdir(uploadDir, { recursive: true });
 
     for (const file of files) {
       if (file && file.size > 0) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
-        const fileName = `${Date.now()}-${file.name.replace(/\s+/g, '_')}`;
+        const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
         const filePath = path.join(uploadDir, fileName);
         await writeFile(filePath, buffer);
         uploadedUrls.push(`/uploads/${fileName}`);
@@ -51,11 +51,10 @@ export async function updateProduct(prevState: unknown, formData: FormData) {
     // 2. Validar datos con Zod
     const validated = productUpdateSchema.parse({
       id: id,
-      name: (formData.get('name') as string)?.trim(),
-      description: (formData.get('description') as string)?.trim(),
-      price: Number(formData.get('price')),
-      stripeId: (formData.get('stripeId') as string)?.trim(),
-      inStock: formData.get('inStock') === 'true',
+      name: (formData.get("name") as string)?.trim(),
+      description: (formData.get("description") as string)?.trim(),
+      price: Number(formData.get("price")),
+      inStock: formData.get("inStock") === "true",
     });
 
     // 3. Crear el payload usando la interfaz definida arriba
@@ -65,23 +64,63 @@ export async function updateProduct(prevState: unknown, formData: FormData) {
       ...rest,
     };
 
+    // 4. Lógica de Stripe para actualizaciones
+    const currentProduct = await Product.findById(id);
+
+    if (currentProduct) {
+      // Si el precio ha cambiado, necesitamos crear un nuevo precio en Stripe
+      if (currentProduct.price !== validated.price) {
+        // Primero intentamos obtener el producto de Stripe asociado a este precio
+        // (Asumiendo que stripeId en tu DB es el Price ID, ej: price_123...)
+        if (!process.env.STRIPE_SECRET_KEY) {
+          throw new Error("Falta la variable de entorno STRIPE_SECRET_KEY");
+        }
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+        try {
+          const oldPrice = await stripe.prices.retrieve(
+            currentProduct.stripeId
+          );
+
+          // Creamos el nuevo precio asociado al mismo producto de Stripe
+          const newPrice = await stripe.prices.create({
+            product: oldPrice.product as string,
+            unit_amount: Math.round(validated.price * 100),
+            currency: "sek",
+          });
+
+          // Actualizamos el stripeId en nuestra base de datos
+          updatePayload.stripeId = newPrice.id;
+        } catch (stripeError) {
+          console.error("Error actualizando precio en Stripe:", stripeError);
+          // Si falla Stripe, podrías decidir abortar o continuar solo con la DB.
+          // Por seguridad, aquí solo logueamos el error.
+        }
+      } else {
+        // Si el precio no cambia, mantenemos el ID existente
+        updatePayload.stripeId = currentProduct.stripeId;
+      }
+    }
+
     // Solo añadimos imágenes si hay nuevas subidas
     if (uploadedUrls.length > 0) {
       updatePayload.images = uploadedUrls;
     }
 
-    const updatedProduct = await Product.findByIdAndUpdate(id, updatePayload, { new: true });
+    const updatedProduct = await Product.findByIdAndUpdate(id, updatePayload, {
+      new: true,
+    });
 
-    if (!updatedProduct) return { success: false, error: 'Producto no encontrado' };
+    if (!updatedProduct)
+      return { success: false, error: "Producto no encontrado" };
 
-    revalidatePath('/admin');
+    revalidatePath("/admin");
     return { success: true, error: null };
-
   } catch (err: unknown) {
-    console.error('Error:', err);
+    console.error("Error:", err);
     if (err instanceof z.ZodError) {
       return { success: false, error: err.issues[0].message };
     }
-    return { success: false, error: 'Error al actualizar' };
+    return { success: false, error: "Error al actualizar" };
   }
 }

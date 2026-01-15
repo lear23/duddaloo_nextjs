@@ -94,13 +94,13 @@ export default function ProductCard({
         </div>
         
         {/* Imagen del producto */}
-        <div className="relative aspect-[4/5] overflow-hidden">
+        <div className="relative aspect-4/5 overflow-hidden">
           {product.images[0] ? (
             <Image
               src={product.images[0]}
               alt={product.name}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              className="object-fit transition-transform duration-500 group-hover:scale-105"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             />
           ) : (

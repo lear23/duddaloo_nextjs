@@ -72,7 +72,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                   src={product.images[selectedImage]}
                   alt={product.name}
                   fill
-                  className="object-cover"
+                  className="object-fit"
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   priority
                 />
@@ -100,7 +100,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                       src={image}
                       alt={`${product.name} view ${index + 1}`}
                       fill
-                      className="object-cover"
+                      className="object-covert"
                       sizes="100px"
                     />
                   </button>
@@ -110,7 +110,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           </div>
 
           {/* Información del producto */}
-          <div className="space-y-6">
+          <div className="py-12 space-y-26 lg:space-y-36">
             {/* Nombre y precio */}
             <div>
               <h1 className="font-serif text-3xl lg:text-4xl font-bold text-gray-900">

@@ -1,11 +1,12 @@
-'use client';
+"use client";
 
-import { useActionState, useEffect, useState } from 'react';
-import { updateProduct } from '../actions/updateProduct';
-import Image from 'next/image';
-import { useFormStatus } from 'react-dom';
+import { useActionState, useEffect, useState } from "react";
+import { updateProduct } from "../actions/updateProduct";
+import Image from "next/image";
+import { useFormStatus } from "react-dom";
 
-const UPLOAD_PLACEHOLDER = "https://cdn-icons-png.flaticon.com/512/126/126477.png";
+const UPLOAD_PLACEHOLDER =
+  "https://cdn-icons-png.flaticon.com/512/126/126477.png";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -15,7 +16,7 @@ function SubmitButton() {
       className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
       disabled={pending}
     >
-      {pending ? 'Saving...' : 'Update Product'}
+      {pending ? "Saving..." : "Update Product"}
     </button>
   );
 }
@@ -33,21 +34,32 @@ export default function EditProductForm({
     inStock: boolean;
   };
 }) {
-  const [state, formAction] = useActionState(updateProduct, { success: false, error: null });
+  const [state, formAction] = useActionState(updateProduct, {
+    success: false,
+    error: null,
+  });
 
   // State to preview existing or new images
   const [previews, setPreviews] = useState<(string | null)[]>(() => {
     const existing = product.images || [];
-    return [existing[0] || null, existing[1] || null, existing[2] || null, existing[3] || null];
+    return [
+      existing[0] || null,
+      existing[1] || null,
+      existing[2] || null,
+      existing[3] || null,
+    ];
   });
 
   useEffect(() => {
     if (state?.success) {
-      alert('Product updated ✅');
+      alert("Product updated ✅");
     }
   }, [state]);
 
-  const handleImageChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (
+    index: number,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (file) {
       const newPreviews = [...previews];
@@ -57,17 +69,30 @@ export default function EditProductForm({
   };
 
   return (
-    <form action={formAction} className="space-y-4 p-4 border rounded bg-gray-50">
+    <form
+      action={formAction}
+      className="space-y-4 p-4 border rounded bg-gray-50"
+    >
       <input type="hidden" name="id" value={product._id} />
 
-      {state?.error && <p className="text-red-500 bg-red-50 p-2 rounded text-sm">{state.error}</p>}
+      {state?.error && (
+        <p className="text-red-500 bg-red-50 p-2 rounded text-sm">
+          {state.error}
+        </p>
+      )}
 
       {/* SECTION FOR 4 IMAGES (Same as in AddProduct) */}
       <div>
-        <label className="block text-sm font-semibold mb-2">Images (Max 4)</label>
+        <label className="block text-sm font-semibold mb-2">
+          Images (Max 4)
+        </label>
         <div className="flex flex-wrap gap-3">
           {[0, 1, 2, 3].map((index) => (
-            <label key={index} htmlFor={`edit-img-${product._id}-${index}`} className="cursor-pointer">
+            <label
+              key={index}
+              htmlFor={`edit-img-${product._id}-${index}`}
+              className="cursor-pointer"
+            >
               <input
                 type="file"
                 name="images"
@@ -81,7 +106,11 @@ export default function EditProductForm({
                   src={previews[index] || UPLOAD_PLACEHOLDER}
                   alt="Preview"
                   fill
-                  className={previews[index] ? "object-cover" : "object-contain p-4 opacity-20"}
+                  className={
+                    previews[index]
+                      ? "object-cover"
+                      : "object-contain p-4 opacity-20"
+                  }
                 />
               </div>
             </label>
@@ -92,22 +121,35 @@ export default function EditProductForm({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium">Name</label>
-          <input type="text" name="name" defaultValue={product.name} required className="w-full p-2 border rounded" />
+          <input
+            type="text"
+            name="name"
+            defaultValue={product.name}
+            required
+            className="w-full p-2 border rounded"
+          />
         </div>
         <div>
           <label className="block text-sm font-medium">Price (SEK)</label>
-          <input type="number" name="price" defaultValue={product.price} required className="w-full p-2 border rounded" />
+          <input
+            type="number"
+            name="price"
+            defaultValue={product.price}
+            required
+            className="w-full p-2 border rounded"
+          />
         </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium">Stripe Price ID</label>
-        <input type="text" name="stripeId" defaultValue={product.stripeId} required className="w-full p-2 border rounded" />
       </div>
 
       <div>
         <label className="block text-sm font-medium">Description</label>
-        <textarea name="description" defaultValue={product.description} required rows={3} className="w-full p-2 border rounded" />
+        <textarea
+          name="description"
+          defaultValue={product.description}
+          required
+          rows={3}
+          className="w-full p-2 border rounded"
+        />
       </div>
 
       <div className="flex items-center gap-2 py-2">
@@ -118,7 +160,9 @@ export default function EditProductForm({
           value="true"
           id={`stock-${product._id}`}
         />
-        <label htmlFor={`stock-${product._id}`} className="text-sm font-medium">In Stock</label>
+        <label htmlFor={`stock-${product._id}`} className="text-sm font-medium">
+          In Stock
+        </label>
       </div>
 
       <SubmitButton />

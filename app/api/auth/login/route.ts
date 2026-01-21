@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers'; // Importación nativa de Next.js
+import { cookies } from 'next/headers'; 
 import connectDB from '@/lib/db';
 import User from '@/models/User';
 import { verifyPassword, JWT_SECRET, SESSION_COOKIE_NAME } from '@/lib/auth';

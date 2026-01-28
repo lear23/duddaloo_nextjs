@@ -15,15 +15,21 @@ const productSchema = z.object({
   description: z.string().min(1, "La descripción es obligatoria"),
   price: z.number().min(0, "El precio debe ser mayor a 0"),
   images: z.array(z.string()).min(1, "Al menos una imagen es requerida"),
-  inStock: z.boolean(), // Keep inStock validation for now
-  stock: z.number().int().min(0, "El stock debe ser un número entero no negativo"),
+  inStock: z.boolean(),
+  stock: z
+    .number()
+    .int()
+    .min(0, "El stock debe ser un número entero no negativo"),
+  category: z.string().min(1, "La categoría es obligatoria"),
+  rabatt: z.boolean().optional(),
+  discountPercentage: z.number().min(0).max(100).optional(),
 });
 
 export async function createProduct(_prevState: unknown, formData: FormData) {
   try {
     // SECURITY FIX: Verify user is authenticated before allowing product creation
     await requireAuthAction();
-    
+
     await connectDB();
 
     const files = formData.getAll("images") as File[];
@@ -57,8 +63,14 @@ export async function createProduct(_prevState: unknown, formData: FormData) {
       description: (formData.get("description") as string)?.trim(),
       price: Number(formData.get("price")),
       images: uploadedUrls,
-      inStock: formData.get("inStock") === "true", // Extract inStock
-      stock: Number(formData.get("stock")), // Extract stock
+      inStock: Number(formData.get("stock")) > 0,
+      stock: Number(formData.get("stock")),
+      category: (formData.get("category") as string)?.trim(),
+      rabatt:
+        formData.get("rabatt") === "on" || formData.get("rabatt") === "true",
+      discountPercentage: formData.get("discountPercentage")
+        ? Number(formData.get("discountPercentage"))
+        : 0,
     });
 
     // 2. Creamos el producto y el precio en Stripe automáticamente
@@ -82,7 +94,10 @@ export async function createProduct(_prevState: unknown, formData: FormData) {
     await Product.create({
       ...validated,
       stripeId: stripePrice.id,
-      inStock: validated.stock > 0 ? true : false, // Re-evaluate inStock based on stock quantity
+      inStock: validated.stock > 0 ? true : false,
+      category: validated.category,
+      rabatt: validated.rabatt || false,
+      discountPercentage: validated.discountPercentage || 0,
     });
 
     revalidatePath("/admin");

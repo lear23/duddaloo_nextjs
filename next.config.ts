@@ -13,10 +13,15 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'cdn-icons-png.flaticon.com',
+        protocol: "https",
+        hostname: "cdn-icons-png.flaticon.com",
       },
     ],
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb",
+    },
   },
 };
 

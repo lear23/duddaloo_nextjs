@@ -59,6 +59,12 @@ export default function CreateProductForm() {
     null,
     null,
   ]);
+  const [imageUrls, setImageUrls] = useState<(string | null)[]>([
+    null,
+    null,
+    null,
+    null,
+  ]);
   const [categories, setCategories] = useState<any[]>([]);
   const [showDiscount, setShowDiscount] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -79,6 +85,7 @@ export default function CreateProductForm() {
     if (state?.success) {
       formRef.current?.reset();
       setPreviews([null, null, null, null]);
+      setImageUrls([null, null, null, null]);
       setShowDiscount(false);
     }
   }, [state?.success]);
@@ -93,12 +100,10 @@ export default function CreateProductForm() {
       newPreviews[index] = URL.createObjectURL(file);
       setPreviews(newPreviews);
 
-      const urlInput = formRef.current?.querySelector(
-        `input[name="image-url-${index}"]`,
-      ) as HTMLInputElement;
-      if (urlInput) {
-        urlInput.value = "";
-      }
+      // Clear the URL input if file is selected
+      const newUrls = [...imageUrls];
+      newUrls[index] = null;
+      setImageUrls(newUrls);
     }
   };
 
@@ -113,12 +118,9 @@ export default function CreateProductForm() {
       newPreviews[activeImageIndex] = url;
       setPreviews(newPreviews);
 
-      const urlInput = formRef.current?.querySelector(
-        `input[name="image-url-${activeImageIndex}"]`,
-      ) as HTMLInputElement;
-      if (urlInput) {
-        urlInput.value = url;
-      }
+      const newUrls = [...imageUrls];
+      newUrls[activeImageIndex] = url;
+      setImageUrls(newUrls);
 
       const fileInput = formRef.current?.querySelector(
         `input[id="image-${activeImageIndex}"]`,
@@ -130,6 +132,16 @@ export default function CreateProductForm() {
     setIsModalOpen(false);
   };
 
+  const handleFormAction = (formData: FormData) => {
+    // Add image URLs to formData
+    imageUrls.forEach((url, index) => {
+      if (url) {
+        formData.append(`image-url-${index}`, url);
+      }
+    });
+    formAction(formData);
+  };
+
   return (
     <>
       <MediaLibraryModal
@@ -137,7 +149,7 @@ export default function CreateProductForm() {
         onClose={() => setIsModalOpen(false)}
         onSelectImage={handleSelectImage}
       />
-      <form ref={formRef} action={formAction} className="space-y-5">
+      <form ref={formRef} action={handleFormAction} className="space-y-5">
         {state?.error && (
           <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm flex items-center gap-2">
             <svg
@@ -238,7 +250,6 @@ export default function CreateProductForm() {
                   hidden
                   onChange={(e) => handleFileChange(index, e)}
                 />
-                <input type="hidden" name={`image-url-${index}`} />
                 <button
                   type="button"
                   onClick={() => openMediaLibrary(index)}

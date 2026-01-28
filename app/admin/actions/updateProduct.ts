@@ -18,6 +18,9 @@ interface UpdatePayload {
   stripeId?: string; // stripeId might change if price changes, so it can be optional in payload
   inStock: boolean;
   stock: number; // Add stock to UpdatePayload
+  category?: string;
+  rabatt?: boolean;
+  discountPercentage?: number;
   images?: string[]; // La propiedad imágenes es opcional aquí
 }
 
@@ -27,14 +30,20 @@ const productUpdateSchema = z.object({
   description: z.string().min(1),
   price: z.number().min(0),
   inStock: z.boolean(),
-  stock: z.number().int().min(0, "El stock debe ser un número entero no negativo"), // Add stock to schema
+  stock: z
+    .number()
+    .int()
+    .min(0, "El stock debe ser un número entero no negativo"), // Add stock to schema
+  category: z.string().optional(),
+  rabatt: z.boolean().optional(),
+  discountPercentage: z.number().optional(),
 });
 
 export async function updateProduct(prevState: unknown, formData: FormData) {
   try {
     // SECURITY FIX: Verify user is authenticated before allowing product updates
     await requireAuthAction();
-    
+
     await connectDB();
 
     const id = formData.get("id") as string;
@@ -61,8 +70,14 @@ export async function updateProduct(prevState: unknown, formData: FormData) {
       name: (formData.get("name") as string)?.trim(),
       description: (formData.get("description") as string)?.trim(),
       price: Number(formData.get("price")),
-      inStock: formData.get("inStock") === "true",
+      inStock: Number(formData.get("stock")) > 0,
       stock: Number(formData.get("stock")), // Extract stock from formData
+      category: formData.get("category") as string,
+      rabatt:
+        formData.get("rabatt") === "on" || formData.get("rabatt") === "true",
+      discountPercentage: formData.get("discountPercentage")
+        ? Number(formData.get("discountPercentage"))
+        : 0,
     });
 
     // 3. Crear el payload usando la interfaz definida arriba
@@ -71,6 +86,9 @@ export async function updateProduct(prevState: unknown, formData: FormData) {
     const updatePayload: UpdatePayload = {
       ...rest,
       inStock: validated.stock > 0 ? true : false, // Derive inStock from stock
+      category: validated.category,
+      rabatt: validated.rabatt || false,
+      discountPercentage: validated.discountPercentage || 0,
     };
 
     // 4. Lógica de Stripe para actualizaciones
@@ -88,7 +106,7 @@ export async function updateProduct(prevState: unknown, formData: FormData) {
 
         try {
           const oldPrice = await stripe.prices.retrieve(
-            currentProduct.stripeId
+            currentProduct.stripeId,
           );
 
           // Creamos el nuevo precio asociado al mismo producto de Stripe

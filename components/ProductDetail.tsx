@@ -66,13 +66,13 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           {/* Galería de imágenes */}
           <div>
             {/* Imagen principal */}
-            <div className="relative aspect-square overflow-hidden rounded-2xl bg-gray-50 mb-4">
+            <div className="relative aspect-square overflow-hidden rounded-2xl bg-white mb-4">
               {product.images && product.images[selectedImage] ? (
                 <Image
                   src={product.images[selectedImage]}
                   alt={product.name}
                   fill
-                  className="object-fit"
+                  className="object-contain"
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   priority
                 />

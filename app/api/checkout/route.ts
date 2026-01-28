@@ -78,7 +78,6 @@ export async function POST(request: NextRequest) {
         "card",
         "klarna",
         "paypal",
-        "swish",
         // Apple Pay y Google Pay se muestran dinámicamente si el cliente usa un dispositivo compatible.
       ],
       line_items: lineItems,

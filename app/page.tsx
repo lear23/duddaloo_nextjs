@@ -34,7 +34,7 @@ export default async function HomePage() {
                 </p>
                 <div className="mt-8 flex flex-wrap gap-4">
                   <Link 
-                    href="/shop"
+                    href="/products"
                     className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-all duration-300 bg-purple-600 text-white hover:bg-purple-700 h-12 rounded-lg px-8 text-base"
                   >
                     Explore Shop
@@ -49,12 +49,12 @@ export default async function HomePage() {
                 </div>
               </div>
               <div className="order-1 lg:order-2">
-                <div className="relative aspect-4/5 lg:aspect-square overflow-hidden rounded-2xl bg-gray-100">
+                <div className="relative aspect-4/5 lg:aspect-square overflow-hidden rounded-2xl">
                   <Image
-                    src="/homebild.jpg"
+                    src="/Mel.jpg"
                     alt="home bildillustration"
                     fill
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-contain"
                     priority
                   />
                 </div>

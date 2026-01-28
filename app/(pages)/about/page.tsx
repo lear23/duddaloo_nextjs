@@ -86,19 +86,20 @@ const AboutPage = () => {
               Våra Karaktärer
             </h2>
             <div className="flex flex-col md:flex-row gap-8 md:gap-12">
-              <div className="flex-1 text-center p-8 bg-[#F7F0ED]  rounded-2xl shadow-lg">
+              <div className="flex-1 text-center p-8 bg-[#eefcfd]   rounded-2xl shadow-lg">
                 <h3 className="font-serif text-2xl font-semibold text-gray-800 mb-4">Melleloos</h3>
                 <p className="text-muted-foreground text-gray-600 leading-relaxed">
-                  Det äldsta syskonet i Duddaloos-familjen! Trygg, klok och full av idéer. Den som ser, förstår och finns där, alltid med ett varmt hjärta och en ny uppfinning på gång.
+                    Mellanbarnet i Duddaloos-familjen! Nyfiken, modig och full av tankar. Känner stort, tänker djupt och hittar sin väg, ett steg i taget.
+                
                 </p>
               </div>
               <div className="flex-1 text-center p-8 bg-[#E8EEEA] rounded-2xl shadow-lg">
                 <h3 className="font-serif text-2xl font-semibold text-gray-800 mb-4">Storeloos</h3>
                 <p className="text-muted-foreground text-gray-600 leading-relaxed">
-                  Mellanbarnet i Duddaloos-familjen! Nyfiken, modig och full av tankar. Känner stort, tänker djupt och hittar sin väg, ett steg i taget.
+                   Det äldsta syskonet i Duddaloos-familjen! Trygg, klok och full av idéer. Den som ser, förstår och finns där, alltid med ett varmt hjärta och en ny uppfinning på gång.
                 </p>
               </div>
-              <div className="flex-1 text-center p-8 bg-[#F8F6F2] rounded-2xl shadow-lg">
+              <div className="flex-1 text-center p-8 bg-[#F7F0ED] rounded-2xl shadow-lg">
                 <h3 className="font-serif text-2xl font-semibold text-gray-800 mb-4">Lilleloos</h3>
                 <p className="text-muted-foreground text-gray-600 leading-relaxed">
                   Den allra yngsta i Duddaloos-familjen! Liten till storleken men med ett hjärta fullt av färger. Älskar att leka, känna och upptäcka världen, en känsla i taget.
@@ -162,7 +163,7 @@ const AboutPage = () => {
             <div className="grid gap-8 md:grid-cols-3">
 
               {/* Card 1 */}
-              <div className="p-8 rounded-2xl bg-[#F7F0ED] animate-fade-in">
+              <div className="p-8 rounded-2xl bg-[#eefcfd] animate-fade-in">
                 <h3 className="font-serif text-xl font-medium text-foreground mb-3">
                   Kvalitet Först
                 </h3>
@@ -186,7 +187,7 @@ const AboutPage = () => {
 
               {/* Card 3 */}
               <div
-                className="p-8 rounded-2xl bg-[#F8F6F2] animate-fade-in"
+                className="p-8 rounded-2xl bg-[#F7F0ED] animate-fade-in"
                 style={{ animationDelay: "200ms" }}
               >
                 <h3 className="font-serif text-xl font-medium text-foreground mb-3">

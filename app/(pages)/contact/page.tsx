@@ -14,9 +14,9 @@ const ContactPage = () => {
               </p>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2  ">
             {/* Columna Izquierda: Información de Contacto */}
-            <div className="space-y-8">
+            <div className="space-y-8 flex flex-col justify-start mt-12 items-center"> 
               <div>
                 <h2 className="text-2xl font-semibold mb-6">Contact Information</h2>
                 <div className="space-y-8">
@@ -29,22 +29,9 @@ const ContactPage = () => {
                     </div>
                     <div>
                       <h3 className="font-medium text-lg">Email</h3>
-                      <p className="text-muted-foreground">hello@yourbrand.com</p>
+                      <p className="text-muted-foreground">team@duddaloos.se</p>
                     </div>
                   </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="bg-sage/10 p-3 rounded-lg">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-phone h-5 w-5 text-sage-foreground">
-                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-lg">Phone</h3>
-                      <p className="text-muted-foreground">+46 123 456 789</p>
-                    </div>
-                  </div>
-
                   <div className="flex items-start gap-4">
                     <div className="bg-muted/10 p-3 rounded-lg">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-map-pin h-5 w-5 text-muted-foreground">
@@ -54,17 +41,9 @@ const ContactPage = () => {
                     </div>
                     <div>
                       <h3 className="font-medium text-lg">Address</h3>
-                      <p className="text-muted-foreground">123 Business Street<br />Stockholm, Sweden 12345</p>
+                      <p className="text-muted-foreground">Stockholm, Sweden</p>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              <div className="px-6 py-8 bg-[#F8F6F2] rounded-2xl shadow-sm">
-                <h2 className="text-2xl font-semibold mb-4">Business Hours</h2>
-                <div className="space-y-2">
-                  <p className="text-muted-foreground"><span className="font-medium">Monday - Friday:</span> 9:00 AM - 5:00 PM (CET)</p>
-                  <p className="text-muted-foreground"><span className="font-medium">Saturday - Sunday:</span> Closed</p>
                 </div>
               </div>
             </div>

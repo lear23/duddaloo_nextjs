@@ -77,7 +77,7 @@ export default function EditProductForm({
 
   const handleImageChange = (
     index: number,
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -222,7 +222,10 @@ export default function EditProductForm({
             id={`rabatt-${product._id}`}
             className="w-4 h-4"
           />
-          <label htmlFor={`rabatt-${product._id}`} className="text-sm font-medium">
+          <label
+            htmlFor={`rabatt-${product._id}`}
+            className="text-sm font-medium"
+          >
             🏷️ Rabatt
           </label>
         </div>
@@ -261,7 +264,10 @@ export default function EditProductForm({
             value="true"
             id={`stock-${product._id}`}
           />
-          <label htmlFor={`stock-${product._id}`} className="text-sm font-medium">
+          <label
+            htmlFor={`stock-${product._id}`}
+            className="text-sm font-medium"
+          >
             In Stock
           </label>
         </div>

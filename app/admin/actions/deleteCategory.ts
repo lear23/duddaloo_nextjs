@@ -25,7 +25,8 @@ export async function deleteCategory(categoryId: string) {
     console.error("Error deleting category:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to delete category",
+      error:
+        error instanceof Error ? error.message : "Failed to delete category",
     };
   }
 }

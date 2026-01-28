@@ -1,5 +1,5 @@
 // models/Product.ts
-import { Schema, model, models } from 'mongoose';
+import { Schema, model, models } from "mongoose";
 
 export interface IProduct {
   _id?: string;
@@ -30,8 +30,8 @@ const productSchema = new Schema<IProduct>(
     rabatt: { type: Boolean, default: false },
     discountPercentage: { type: Number, default: 0, min: 0, max: 100 },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-const Product = models.Product || model('Product', productSchema);
+const Product = models.Product || model("Product", productSchema);
 export default Product;

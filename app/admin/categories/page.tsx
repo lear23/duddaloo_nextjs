@@ -49,7 +49,9 @@ export default async function CategoriesPage() {
             {/* Create Category */}
             <div className="lg:col-span-1">
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-6">
-                <h3 className="text-lg font-bold text-gray-800 mb-4">Create Category</h3>
+                <h3 className="text-lg font-bold text-gray-800 mb-4">
+                  Create Category
+                </h3>
                 <CreateCategoryForm />
               </div>
             </div>
@@ -57,7 +59,9 @@ export default async function CategoriesPage() {
             {/* Categories List */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-bold text-gray-800 mb-4">All Categories</h3>
+                <h3 className="text-lg font-bold text-gray-800 mb-4">
+                  All Categories
+                </h3>
                 <CategoryList />
               </div>
             </div>

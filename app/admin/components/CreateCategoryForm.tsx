@@ -34,11 +34,15 @@ export default function CreateCategoryForm() {
   return (
     <form ref={formRef} action={formAction} className="space-y-3">
       {state?.error && (
-        <p className="text-red-600 text-sm bg-red-50 p-2 rounded">{state.error}</p>
+        <p className="text-red-600 text-sm bg-red-50 p-2 rounded">
+          {state.error}
+        </p>
       )}
 
       {state?.success && (
-        <p className="text-green-600 text-sm bg-green-50 p-2 rounded">✅ Category created!</p>
+        <p className="text-green-600 text-sm bg-green-50 p-2 rounded">
+          ✅ Category created!
+        </p>
       )}
 
       <div>
@@ -53,7 +57,9 @@ export default function CreateCategoryForm() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Slug (optional)</label>
+        <label className="block text-sm font-medium mb-1">
+          Slug (optional)
+        </label>
         <input
           type="text"
           name="slug"

@@ -3,7 +3,11 @@
 
 import { deleteCategory } from "../actions/deleteCategory";
 
-export default function DeleteCategoryButton({ categoryId }: { categoryId: string }) {
+export default function DeleteCategoryButton({
+  categoryId,
+}: {
+  categoryId: string;
+}) {
   const handleDelete = async () => {
     if (confirm("Delete this category?")) {
       await deleteCategory(categoryId);

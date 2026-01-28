@@ -85,7 +85,7 @@ export default function CreateProductForm() {
 
   const handleFileChange = (
     index: number,
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -93,7 +93,9 @@ export default function CreateProductForm() {
       newPreviews[index] = URL.createObjectURL(file);
       setPreviews(newPreviews);
 
-      const urlInput = formRef.current?.querySelector(`input[name="image-url-${index}"]`) as HTMLInputElement;
+      const urlInput = formRef.current?.querySelector(
+        `input[name="image-url-${index}"]`,
+      ) as HTMLInputElement;
       if (urlInput) {
         urlInput.value = "";
       }
@@ -111,12 +113,16 @@ export default function CreateProductForm() {
       newPreviews[activeImageIndex] = url;
       setPreviews(newPreviews);
 
-      const urlInput = formRef.current?.querySelector(`input[name="image-url-${activeImageIndex}"]`) as HTMLInputElement;
+      const urlInput = formRef.current?.querySelector(
+        `input[name="image-url-${activeImageIndex}"]`,
+      ) as HTMLInputElement;
       if (urlInput) {
         urlInput.value = url;
       }
 
-      const fileInput = formRef.current?.querySelector(`input[id="image-${activeImageIndex}"]`) as HTMLInputElement;
+      const fileInput = formRef.current?.querySelector(
+        `input[id="image-${activeImageIndex}"]`,
+      ) as HTMLInputElement;
       if (fileInput) {
         fileInput.value = "";
       }
@@ -203,10 +209,10 @@ export default function CreateProductForm() {
                   />
                   {!previews[index] && (
                     <div className="absolute inset-0 flex items-center justify-center">
-                       <label
+                      <label
                         htmlFor={`image-${index}`}
                         className="cursor-pointer"
-                       >
+                      >
                         <svg
                           className="w-8 h-8 text-gray-400"
                           fill="none"
@@ -220,11 +226,11 @@ export default function CreateProductForm() {
                             d="M12 4v16m8-8H4"
                           />
                         </svg>
-                       </label>
+                      </label>
                     </div>
                   )}
                 </div>
-                 <input
+                <input
                   type="file"
                   name="images"
                   id={`image-${index}`}
@@ -232,10 +238,7 @@ export default function CreateProductForm() {
                   hidden
                   onChange={(e) => handleFileChange(index, e)}
                 />
-                 <input
-                  type="hidden"
-                  name={`image-url-${index}`}
-                />
+                <input type="hidden" name={`image-url-${index}`} />
                 <button
                   type="button"
                   onClick={() => openMediaLibrary(index)}
@@ -317,7 +320,10 @@ export default function CreateProductForm() {
             onChange={(e) => setShowDiscount(e.target.checked)}
             className="w-4 h-4"
           />
-          <label htmlFor="rabatt" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <label
+            htmlFor="rabatt"
+            className="text-sm font-semibold text-gray-700 flex items-center gap-2"
+          >
             🏷️ Rabatt (Discount)
           </label>
         </div>

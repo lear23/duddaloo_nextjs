@@ -1,5 +1,5 @@
 // models/Category.ts
-import { Schema, model, models } from 'mongoose';
+import { Schema, model, models } from "mongoose";
 
 export interface ICategory {
   _id?: string;
@@ -16,8 +16,8 @@ const categorySchema = new Schema<ICategory>(
     slug: { type: String, required: true, unique: true },
     description: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-const Category = models.Category || model('Category', categorySchema);
+const Category = models.Category || model("Category", categorySchema);
 export default Category;

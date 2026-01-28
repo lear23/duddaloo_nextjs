@@ -9,7 +9,9 @@ export async function createCategory(prevState: any, formData: FormData) {
     await connectDB();
 
     const name = formData.get("name") as string;
-    const slug = (formData.get("slug") as string) || name.toLowerCase().replace(/\s+/g, "-");
+    const slug =
+      (formData.get("slug") as string) ||
+      name.toLowerCase().replace(/\s+/g, "-");
     const description = formData.get("description") as string;
 
     if (!name) {
@@ -43,7 +45,8 @@ export async function createCategory(prevState: any, formData: FormData) {
     console.error("Error creating category:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to create category",
+      error:
+        error instanceof Error ? error.message : "Failed to create category",
     };
   }
 }

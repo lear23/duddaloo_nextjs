@@ -8,6 +8,9 @@ export async function GET() {
     const categories = await Category.find({}).sort({ createdAt: 1 });
     return Response.json(categories);
   } catch (error) {
-    return Response.json({ error: "Failed to fetch categories" }, { status: 500 });
+    return Response.json(
+      { error: "Failed to fetch categories" },
+      { status: 500 },
+    );
   }
 }

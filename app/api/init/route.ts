@@ -34,7 +34,7 @@ export async function GET() {
     console.error("Init error:", error);
     return Response.json(
       { error: "Failed to initialize", details: error },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

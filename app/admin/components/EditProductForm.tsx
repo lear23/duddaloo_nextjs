@@ -35,6 +35,9 @@ export default function EditProductForm({
     images?: string[];
     inStock: boolean;
     stock: number;
+    category?: string;
+    rabatt?: boolean;
+    discountPercentage?: number;
   };
 }) {
   const [state, formAction] = useActionState(updateProduct, {
@@ -54,6 +57,17 @@ export default function EditProductForm({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState<number | null>(null);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [showDiscount, setShowDiscount] = useState(!!product.rabatt);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const res = await fetch("/api/categories");
+      const data = await res.json();
+      setCategories(data);
+    };
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     if (state?.success) {
@@ -170,6 +184,22 @@ export default function EditProductForm({
             />
           </div>
           <div>
+            <label className="block text-sm font-medium">Category</label>
+            <select
+              name="category"
+              required
+              defaultValue={product.category || ""}
+              className="w-full p-2 border rounded"
+            >
+              <option value="">Select a category</option>
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat._id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
             <label className="block text-sm font-medium">Stock Quantity</label>
             <input
               type="number"
@@ -182,6 +212,35 @@ export default function EditProductForm({
             />
           </div>
         </div>
+
+        <div className="flex items-center gap-2 p-2 bg-yellow-50 border border-yellow-200 rounded">
+          <input
+            type="checkbox"
+            name="rabatt"
+            checked={showDiscount}
+            onChange={(e) => setShowDiscount(e.target.checked)}
+            id={`rabatt-${product._id}`}
+            className="w-4 h-4"
+          />
+          <label htmlFor={`rabatt-${product._id}`} className="text-sm font-medium">
+            🏷️ Rabatt
+          </label>
+        </div>
+
+        {showDiscount && (
+          <div>
+            <label className="block text-sm font-medium mb-1">Discount %</label>
+            <input
+              type="number"
+              name="discountPercentage"
+              defaultValue={product.discountPercentage || 0}
+              min="0"
+              max="100"
+              step="1"
+              className="w-full p-2 border rounded"
+            />
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-medium">Description</label>

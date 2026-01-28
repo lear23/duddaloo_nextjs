@@ -48,7 +48,7 @@ function SubmitButton() {
   );
 }
 
-export default function CreateProductForm() { // Renamed from AdminProductForm
+export default function CreateProductForm() {
   const [state, formAction] = useActionState(createProduct, {
     success: false,
     error: null,
@@ -59,14 +59,27 @@ export default function CreateProductForm() { // Renamed from AdminProductForm
     null,
     null,
   ]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [showDiscount, setShowDiscount] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState<number | null>(null);
 
   useEffect(() => {
+    // Cargar categorías
+    const fetchCategories = async () => {
+      const res = await fetch("/api/categories");
+      const data = await res.json();
+      setCategories(data);
+    };
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
     if (state?.success) {
       formRef.current?.reset();
       setPreviews([null, null, null, null]);
+      setShowDiscount(false);
     }
   }, [state?.success]);
 
@@ -80,7 +93,6 @@ export default function CreateProductForm() { // Renamed from AdminProductForm
       newPreviews[index] = URL.createObjectURL(file);
       setPreviews(newPreviews);
 
-      // Clear the hidden URL input
       const urlInput = formRef.current?.querySelector(`input[name="image-url-${index}"]`) as HTMLInputElement;
       if (urlInput) {
         urlInput.value = "";
@@ -99,13 +111,11 @@ export default function CreateProductForm() { // Renamed from AdminProductForm
       newPreviews[activeImageIndex] = url;
       setPreviews(newPreviews);
 
-      // Also update the hidden input
       const urlInput = formRef.current?.querySelector(`input[name="image-url-${activeImageIndex}"]`) as HTMLInputElement;
       if (urlInput) {
         urlInput.value = url;
       }
 
-      // Clear the file input
       const fileInput = formRef.current?.querySelector(`input[id="image-${activeImageIndex}"]`) as HTMLInputElement;
       if (fileInput) {
         fileInput.value = "";
@@ -267,6 +277,23 @@ export default function CreateProductForm() { // Renamed from AdminProductForm
           </div>
           <div className="space-y-2">
             <label className="text-sm font-semibold text-gray-700">
+              Category
+            </label>
+            <select
+              name="category"
+              required
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+            >
+              <option value="">Select a category</option>
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat._id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-gray-700">
               Stock Quantity
             </label>
             <input
@@ -280,6 +307,38 @@ export default function CreateProductForm() { // Renamed from AdminProductForm
             />
           </div>
         </div>
+
+        <div className="flex items-center gap-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <input
+            type="checkbox"
+            name="rabatt"
+            id="rabatt"
+            checked={showDiscount}
+            onChange={(e) => setShowDiscount(e.target.checked)}
+            className="w-4 h-4"
+          />
+          <label htmlFor="rabatt" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            🏷️ Rabatt (Discount)
+          </label>
+        </div>
+
+        {showDiscount && (
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-gray-700">
+              Discount Percentage (%)
+            </label>
+            <input
+              type="number"
+              name="discountPercentage"
+              min="0"
+              max="100"
+              step="1"
+              defaultValue="0"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+              placeholder="e.g., 20"
+            />
+          </div>
+        )}
 
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-700">

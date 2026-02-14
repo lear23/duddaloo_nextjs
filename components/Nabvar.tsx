@@ -24,7 +24,6 @@ export default function Navbar() {
 
     fetchCart();
 
-    // Escuchar el evento personalizado para actualizar el contador
     const handleCartUpdate = () => fetchCart();
     window.addEventListener("cart-updated", handleCartUpdate);
 

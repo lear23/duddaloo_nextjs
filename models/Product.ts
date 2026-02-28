@@ -10,9 +10,9 @@ export interface IProduct {
   images: string[];
   inStock: boolean;
   stock: number;
-  category: string; // ID de la categoría
-  rabatt: boolean; // Tiene descuento
-  discountPercentage: number; // Porcentaje de descuento (0-100)
+  category: string; 
+  rabatt: boolean;
+  discountPercentage: number;
   createdAt?: Date;
   updatedAt?: Date;
 }

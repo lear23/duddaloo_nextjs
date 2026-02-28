@@ -6,19 +6,19 @@ import Product from "@/models/Product";
 import { notFound } from "next/navigation";
 
 async function getProduct(id: string) {
-  console.log("🔍 Buscando producto con ID:", id);
-  
+  console.log("🔍 Söker produkt med ID:", id);
+
   try {
     await connectDB();
     const product = await Product.findById(id).lean();
-    
+
     if (!product) {
-      console.log("❌ Producto NO encontrado");
+      console.log("❌ Produkt INTE funnen");
       return null;
     }
-    
-    console.log("✅ Producto ENCONTRADO:", product.name);
-    
+
+    console.log("✅ Produkt FUNNEN:", product.name);
+
     return {
       ...product,
       _id: product._id.toString(),
@@ -26,28 +26,26 @@ async function getProduct(id: string) {
       updatedAt: product.updatedAt?.toString(),
     };
   } catch (error) {
-    console.error("💥 Error en getProduct:", error);
+    console.error("💥 Fel i getProduct:", error);
     return null;
   }
 }
 
-// CORREGIDO: Usar await antes de params
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
-  // Desempaquetar la Promise
   const { id } = await params;
   console.log("📱 generateMetadata - ID:", id);
-  
+
   const product = await getProduct(id);
-  
+
   if (!product) {
     return {
-      title: "Product Not Found - Duddaloo",
+      title: "Produkt hittades inte - Duddaloo",
     };
   }
-  
+
   return {
     title: `${product.name} - Duddaloo`,
-    description: product.description || "Beautiful product for children",
+    description: product.description || "Vacker produkt för barn",
     openGraph: {
       title: product.name,
       description: product.description,
@@ -56,23 +54,21 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
-// CORREGIDO: La página principal también necesita await params
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
-  console.log("🚀 ProductPage ejecutándose");
-  
-  // Desempaquetar la Promise
+  console.log("🚀 ProductPage körs");
+
   const { id } = await params;
-  console.log("📋 ID recibido:", id);
-  
+  console.log("📋 Mottaget ID:", id);
+
   const product = await getProduct(id);
-  
+
   if (!product) {
-    console.log("📛 Mostrando página 404");
+    console.log("📛 Visar 404-sida");
     notFound();
   }
 
-  console.log("🎉 Renderizando ProductDetail con:", product.name);
-  
+  console.log("🎉 Renderar ProductDetail med:", product.name);
+
   return (
     <>
       <Navbar />

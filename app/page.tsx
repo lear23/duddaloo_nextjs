@@ -26,25 +26,26 @@ export default async function HomePage() {
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
               <div className="order-2 lg:order-1">
                 <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium text-gray-900 leading-tight">
-                  Nurturing little hearts with kindness & creativity
+                  En emotionell livsstilsbutik för barns inre värld 
                 </h1>
                 <p className="mt-6 text-lg text-gray-600 leading-relaxed max-w-lg">
-                  Beautiful products designed to support emotional learning, spark imagination, 
-                  and create meaningful moments for children and families.
+                  För stora känslor i små hjärtan 
+                  En lekfull värld kring våra figurer där berättelser, pedagogiska material och barnrumsdetaljer 
+                  tillsammans skapar trygghet och stödjer barns utveckling genom lek, läsning och samtal.
                 </p>
                 <div className="mt-8 flex flex-wrap gap-4">
                   <Link 
                     href="/products"
                     className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-all duration-300 bg-purple-600 text-white hover:bg-purple-700 h-12 rounded-lg px-8 text-base"
                   >
-                    Explore Shop
+                    Produkter
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                   <Link 
                     href="/about"
                     className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium border border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white transition-all duration-300 h-12 rounded-lg px-8 text-base"
                   >
-                    Our Story
+                    Om oss
                   </Link>
                 </div>
               </div>

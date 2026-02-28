@@ -15,7 +15,7 @@ export default function CartPage() {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [updatingItem, setUpdatingItem] = useState<string | null>(null);
 
-  // Fetch cart
+  // Hämta varukorg
   useEffect(() => {
     if (!cartId) return;
     const fetchCart = async () => {
@@ -26,7 +26,7 @@ export default function CartPage() {
         const data: CartData = await res.json();
         setCart(data);
       } catch (error) {
-        console.error('Error fetching cart:', error);
+        console.error('Fel vid hämtning av varukorg:', error);
         setCart({ items: [], totalItems: 0, totalPrice: 0 });
       } finally {
         setLoading(false);
@@ -35,7 +35,7 @@ export default function CartPage() {
     fetchCart();
   }, [cartId]);
 
-  // Update quantity
+  // Uppdatera kvantitet
   const updateQuantity = async (productId: string, newQuantity: number) => {
     if (!cartId || newQuantity < 1) return;
     setUpdatingItem(productId);
@@ -51,13 +51,13 @@ export default function CartPage() {
         window.dispatchEvent(new Event('cart-updated'));
       }
     } catch (error) {
-      console.error('Error updating quantity:', error);
+      console.error('Fel vid uppdatering av kvantitet:', error);
     } finally {
       setUpdatingItem(null);
     }
   };
 
-  // Remove item
+  // Ta bort artikel
   const removeItem = async (productId: string) => {
     if (!cartId) return;
     setUpdatingItem(productId);
@@ -73,13 +73,13 @@ export default function CartPage() {
         window.dispatchEvent(new Event('cart-updated'));
       }
     } catch (error) {
-      console.error('Error removing item:', error);
+      console.error('Fel vid borttagning av artikel:', error);
     } finally {
       setUpdatingItem(null);
     }
   };
 
-  // Checkout
+  // Gå till kassan
   const handleCheckout = async () => {
     if (!cartId) return;
     try {
@@ -95,33 +95,33 @@ export default function CartPage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        alert('Error starting payment: ' + (data.error || 'unknown'));
+        alert('Fel vid start av betalning: ' + (data.error || 'okänt fel'));
         setIsRedirecting(false);
       }
     } catch {
-      alert('Network error while connecting to Stripe');
+      alert('Nätverksfel vid anslutning till betaltjänst');
       setIsRedirecting(false);
     }
   };
 
-  // Loading
+  // Laddar
   if (loading) return <LoadingCart />;
 
-  // Empty
+  // Tom varukorg
   if (!cart || cart.items.length === 0) return <EmptyCart />;
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
       <div className="max-w-6xl mx-auto p-4 md:p-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Varukorg</h1>
           <p className="text-gray-600 mt-2">
-            {cart.totalItems} {cart.totalItems === 1 ? 'item' : 'items'} in your cart
+            {cart.totalItems} {cart.totalItems === 1 ? 'artikel' : 'artiklar'} i din varukorg
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Product List */}
+          {/* Produktlista */}
           <div className="lg:col-span-2">
             <CartItems
               items={cart.items}
@@ -131,7 +131,7 @@ export default function CartPage() {
             />
           </div>
 
-          {/* Order Summary */}
+          {/* Ordersammanfattning */}
           <div className="lg:col-span-1">
             <OrderSummary
               cart={cart}

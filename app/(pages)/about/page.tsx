@@ -18,12 +18,21 @@ const AboutPage = () => {
                 </h1>
                 <div className="space-y-6">
                   <p className="text-muted-foreground text-lg md:text-xl text-gray-600 leading-relaxed">
-                    Vi tror att varje barn förtjänar produkter som stärker deras emotionella utveckling, 
-                    väcker kreativitet och skapar bestående minnen med sina familjer.
-                  </p>
-                  <p className="text-muted-foreground text-lg md:text-xl text-gray-600 leading-relaxed">
-                    Grundat av föräldrar och pedagoger är vårt uppdrag att skapa vackra, genomtänkta 
-                    produkter som stödjer barns emotionella lärande och samtidigt ger glädje i vardagen.
+                   Vi är två barndomsvänner som har följts åt genom livet, från lek i parken till arbete med barn 
+                  i vår yrkesvardag. Genom våra egna erfarenheter, både som pedagoger och föräldrar, har vi 
+                  gång på gång sett hur svårt det kan vara för barn att förstå, uttrycka och hantera sina 
+                  känslor. 
+                  Duddaloos föddes ur en gemensam önskan att skapa något som vi själva saknade i mötet 
+                  med barn. 
+                  Med utbildning och yrkeserfarenhet inom pedagogik, samtalsstöd och barns emotionella 
+                  utveckling har vi under många år arbetat nära barn i både förskole- och skolmiljö. En av oss 
+                  arbetar som kurator med särskilt fokus på barns psykiska mående, känsloreglering och 
+                  stödjande samtal. Det dagliga arbetet med att möta barn i svåra känslor, hjälpa dem att sätta 
+                  ord på sina upplevelser och skapa trygghet i samtal har gett oss en djupare förståelse för 
+                  barns inre värld och behovet av konkreta verktyg för att kunna uttrycka det som känns. 
+                  Vi har sett hur känslor som sorg, ilska, skam, rädsla eller ensamhet ofta tar plats utan att 
+                  barnen alltid har orden för att beskriva vad som händer inuti, varken hemma eller i 
+                  pedagogiska miljöer. 
                   </p>
                 </div>
               </div>
@@ -39,12 +48,25 @@ const AboutPage = () => {
                     priority
                   />
                 </div>
-              </div>
+              </div>          
             </div>
+                <p className="text-muted-foreground text-lg md:text-xl text-gray-600 leading-relaxed">
+                  Vi började därför fundera, tänk om känslor kunde bli något synligt, något lekfullt och något 
+                  man kan prata om tillsammans utan att det känns svårt eller fel. Det blev starten på 
+                  Duddaloos. 
+                  Vårt mål är att skapa genomtänkta produkter och material som stärker barns emotionella 
+                  utveckling, väcker kreativitet och fungerar både som ett stöd i familjens vardag och som ett 
+                  pedagogiskt verktyg i förskola och skola. Genom lek, färg och berättelser vill vi ge barn 
+                  möjlighet att förstå sig själva och varandra i trygga sammanhang, oavsett om det sker 
+                  hemma eller i en lärmiljö. 
+                  Duddaloos är inte bara ett varumärke, det är vårt hjärteprojekt. 
+                  Byggt på vänskap, erfarenhet och en stark tro på att varje barn förtjänar att bli förstått även 
+                  när orden inte riktigt räcker till.
+                  </p>
           </div>
         </section>
 
-        {/* Separador */}
+      
         <div className="h-16 md:h-24"></div>
 
         {/* Sección 2: Uppdrag */}
@@ -54,13 +76,14 @@ const AboutPage = () => {
               {/* Texto */}
               <div className="w-full text-center mb-16">
                 <h1 className="font-serif ext-4xl md:text-5xl font-bold text-gray-800 mb-8">
-                  Vårt Uppdrag
+                  Vår Vision
                 </h1>
                 <div className="max-w-4xl mx-auto">
                   <p className="text-muted-foreground text-lg md:text-xl text-gray-600 leading-relaxed">
-                    Att skapa produkter som hjälper barn förstå sina känslor, utveckla empati och bygga självförtroende 
-                    – samtidigt som de har roligt. Vi samarbetar med barnpsykologer, pedagoger och familjer för att säkerställa att allt vi
-                    gör verkligen stödjer tidig barndomsutveckling.
+                    Att skapa produkter som hjälper barn förstå sina känslor, utveckla empati och bygga en trygg 
+                    självbild samtidigt som de har roligt. Vi utvärderar kontinuerligt våra pedagogiska material 
+                    tillsammans med lärare och pedagoger för att säkerställa att de fungerar som ett 
+                    meningsfullt stöd för barns utveckling i både hemmet och i pedagogiska miljöer. 
                   </p>
                 </div>
               </div>
@@ -157,13 +180,12 @@ const AboutPage = () => {
               </div>
             </section>
 
-       <section className="py-20 bg-white">
+       {/* <section className="py-20 bg-white">
           <div className="max-w-6xl mx-auto px-4 md:px-8">
 
             <div className="grid gap-8 md:grid-cols-3">
 
-              {/* Card 1 */}
-              <div className="p-8 rounded-2xl bg-[#eefcfd] animate-fade-in">
+             <div className="p-8 rounded-2xl bg-[#eefcfd] animate-fade-in">
                 <h3 className="font-serif text-xl font-medium text-foreground mb-3">
                   Kvalitet Först
                 </h3>
@@ -171,8 +193,6 @@ const AboutPage = () => {
                   Varje produkt är tillverkad med omsorg och använder säkra, hållbara material som föräldrar kan lita på.
                 </p>
               </div>
-
-              {/* Card 2 */}
               <div
                 className="p-8 rounded-2xl bg-[#E8EEEA] animate-fade-in"
                 style={{ animationDelay: "100ms" }}
@@ -184,8 +204,6 @@ const AboutPage = () => {
                   Allt vi skapar är utformat med barns utvecklingsbehov i åtanke.
                 </p>
               </div>
-
-              {/* Card 3 */}
               <div
                 className="p-8 rounded-2xl bg-[#F7F0ED] animate-fade-in"
                 style={{ animationDelay: "200ms" }}
@@ -201,7 +219,7 @@ const AboutPage = () => {
             </div>
 
           </div>
-        </section>
+        </section> */}
 
 
       </div>

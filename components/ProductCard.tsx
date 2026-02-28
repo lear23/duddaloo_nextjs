@@ -50,7 +50,7 @@ export default function ProductCard({
       });
       window.dispatchEvent(new Event("cart-updated"));
       setToast({ message: `${product.name} added to cart`, type: "success" });
-    } catch (error) {
+    } catch {
       setToast({ message: "Error adding to cart", type: "error" });
     } finally {
       setLoading(false);
@@ -138,7 +138,7 @@ export default function ProductCard({
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+              <div className="w-full h-full bg-lineart-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                 <span className="text-gray-400">No image</span>
               </div>
             )}
@@ -150,7 +150,7 @@ export default function ProductCard({
               <h3 className="font-serif text-lg font-medium text-gray-800 group-hover:text-purple-600 transition-colors line-clamp-1">
                 {product.name}
               </h3>
-              <p className="text-sm text-gray-500 mt-1 line-clamp-2 min-h-[40px]">
+              <p className="text-sm text-gray-500 mt-1 line-clamp-2 min-h-10">
                 {product.description}
               </p>
             </div>

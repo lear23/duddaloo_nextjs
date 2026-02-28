@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { ShoppingCart, Heart, ArrowLeft } from "lucide-react";
+import { ShoppingCart, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCartId } from "@/lib/cartUtils";
 
@@ -44,7 +44,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
       window.dispatchEvent(new Event("cart-updated"));
       alert(`✅ ${quantity} ${product.name} added to cart`);
     } catch (error) {
-      alert("Error adding to cart");
+      alert(`Error adding to cart: ${error}`);
     } finally {
       setLoading(false);
     }
@@ -77,7 +77,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                   priority
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                <div className="w-full h-full flex items-center justify-center bg-lineart-to-br from-gray-100 to-gray-200">
                   <span className="text-gray-400">No image available</span>
                 </div>
               )}
@@ -140,7 +140,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                   >
                     −
                   </button>
-                  <span className="px-4 py-2 min-w-[60px] text-center font-medium">
+                  <span className="px-4 py-2 min-w-15 text-center font-medium">
                     {quantity}
                   </span>
                   <button

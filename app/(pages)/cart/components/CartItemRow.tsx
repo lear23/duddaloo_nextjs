@@ -31,11 +31,11 @@ export default function CartItemRow({
           </div>
         </div>
 
-        {/* Contenido principal - Diferente en móvil y desktop */}
+    
         <div className="flex-1">
-          {/* MOBILE LAYOUT - visible solo en móvil */}
+          {/* MOBILE LAYOUT */}
           <div className="md:hidden">
-            {/* Primera línea: nombre y botón eliminar */}
+           
             <div className="flex justify-between items-start mb-2">
               <h3 className="font-semibold text-base text-gray-900">
                 {item.name}
@@ -49,12 +49,11 @@ export default function CartItemRow({
               </button>
             </div>
             
-            {/* Segunda línea: precio unitario */}
             <p className="text-green-600 font-bold text-base mb-3">
               {item.price} SEK
             </p>
             
-            {/* Tercera línea: controles de cantidad y total */}
+          
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <button
@@ -97,13 +96,13 @@ export default function CartItemRow({
               </div>
             </div>
             
-            {/* Línea de detalle (opcional) */}
+           
             <p className="text-xs text-gray-500 mt-1">
               {item.quantity} × {item.price} SEK
             </p>
           </div>
 
-          {/* DESKTOP LAYOUT - exactamente como estaba, visible solo en desktop */}
+         
           <div className="hidden md:block">
             <div className="flex justify-between items-start">
               <div>

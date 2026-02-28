@@ -7,9 +7,9 @@ import Link from "next/link";
 export default function SuccessModal({
   isOpen,
   onClose,
-  title = "¡Éxito!",
-  message = "Tu acción se completó correctamente",
-  buttonText = "Continuar",
+  title = "Framgång!",
+  message = "Din åtgärd slutfördes korrekt",
+  buttonText = "Fortsätt",
   buttonHref = "/",
 }: {
   isOpen: boolean;

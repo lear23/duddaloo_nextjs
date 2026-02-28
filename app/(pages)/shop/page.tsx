@@ -4,8 +4,7 @@ import ProductCard from "@/components/ProductCard";
 import connectDB from "@/lib/db";
 import Product from "@/models/Product";
 import Category from "@/models/Category";
-import CategoryFilter from "../components/CategoryFilter";
-
+import CategoryFilter from "./components/CategoryFilter";
 
 interface ShopPageProps {
   searchParams: Promise<{ category?: string }>;
@@ -16,37 +15,27 @@ const ShopPage = async ({ searchParams }: ShopPageProps) => {
 
   await connectDB();
 
-  // Obtener categorías
+  // Obtener todas las categorías
   const categories = await Category.find().sort({ name: 1 }).lean();
-
-  // CONSOLA PARA DEPURAR - mira aquí en la terminal
-  console.log("========== DEPURACIÓN ==========");
-  console.log("1. Categoría solicitada en URL:", category);
   
-  // Ver qué categorías existen
-  console.log("2. Categorías en DB:", categories.map(c => ({ 
-    nombre: c.name, 
-    slug: c.slug 
-  })));
-  
-  // Ver TODOS los productos y su categoría REAL
-  const todosLosProductos = await Product.find({ inStock: true }).lean();
-  console.log("3. Productos y sus categorías:", todosLosProductos.map(p => ({
-    nombre: p.name,
-    categoriaGuardada: p.category,
-    tipo: typeof p.category
-  })));
+  // Crear un mapa de slug -> _id para búsqueda rápida
+  const categoryMap = new Map(
+    categories.map(cat => [cat.slug, cat._id.toString()])
+  );
 
-  // Filtrar
-  let productosFiltrados = todosLosProductos;
+  // Construir query para productos
+  const query: { inStock: boolean; category?: string } = { inStock: true };
   
   if (category && category !== "alla") {
-    // Filtrar directamente comparando con lo que hay en DB
-    productosFiltrados = todosLosProductos.filter(p => 
-      p.category?.toLowerCase() === category.toLowerCase()
-    );
-    console.log(`4. Filtrando por "${category}" → ${productosFiltrados.length} productos`);
+    const categoryId = categoryMap.get(category);
+    if (categoryId) {
+      query.category = categoryId; // Filtrar por el ID de la categoría
+    } else {
+      query.category = "nonexistent"; // No mostrar productos si no existe
+    }
   }
+
+  const products = await Product.find(query).lean();
 
   return (
     <>
@@ -54,12 +43,7 @@ const ShopPage = async ({ searchParams }: ShopPageProps) => {
       <div className="min-h-screen max-w-6xl mx-auto p-4 py-12">
         <h1 className="text-6xl font-bold my-6">Produkter</h1>
 
-        {/* INFO TEMPORAL - muestra en pantalla */}
-        <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded text-sm">
-          <p><strong>Debug:</strong> Categoría: {category || "alla"} | Productos: {productosFiltrados.length}</p>
-          <p>Categorías guardadas: {[...new Set(todosLosProductos.map(p => p.category))].join(", ")}</p>
-        </div>
-
+        {/* Filtro de categorías */}
         {categories.length > 0 && (
           <CategoryFilter
             categories={categories.map((cat) => ({
@@ -71,7 +55,7 @@ const ShopPage = async ({ searchParams }: ShopPageProps) => {
           />
         )}
 
-        {productosFiltrados.length === 0 ? (
+        {products.length === 0 ? (
           <p className="text-center py-12 text-gray-500">
             {category
               ? "Inga produkter i denna kategori"
@@ -79,7 +63,7 @@ const ShopPage = async ({ searchParams }: ShopPageProps) => {
           </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {productosFiltrados.map((product) => (
+            {products.map((product) => (
               <ProductCard
                 key={product._id.toString()}
                 product={{

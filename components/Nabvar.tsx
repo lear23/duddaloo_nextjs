@@ -69,7 +69,7 @@ export default function Navbar() {
         {/* Links de navegación - Ocultos en móvil, visibles en desktop */}
         <div className="hidden md:flex gap-4">
           <Link href="/" className="hover:text-gray-600 transition">Home</Link>
-          <Link href="/products" className="hover:text-gray-600 transition">Shop</Link>
+          <Link href="/shop" className="hover:text-gray-600 transition">Shop</Link>
           <Link href="/about" className="hover:text-gray-600 transition">About</Link>
           <Link href="/contact" className="hover:text-gray-600 transition">Contact</Link>
         </div>

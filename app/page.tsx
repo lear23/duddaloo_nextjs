@@ -35,7 +35,7 @@ export default async function HomePage() {
                 </p>
                 <div className="mt-8 flex flex-wrap gap-4">
                   <Link 
-                    href="/products"
+                    href="/shop"
                     className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-all duration-300 bg-purple-600 text-white hover:bg-purple-700 h-12 rounded-lg px-8 text-base"
                   >
                     Produkter
@@ -65,45 +65,46 @@ export default async function HomePage() {
         </section>
 
         {/* Featured Products Section */}
-        <section className="py-24 lg:py-32">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12">
-              <div>
-                <h2 className="font-serif text-3xl sm:text-4xl font-medium text-gray-900">
-                  Featured Products
-                </h2>
-                <p className="mt-3 text-gray-600">
-                  Thoughtfully designed for little ones
-                </p>
-              </div>
-              <Link
-                href="/products"
-                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium hover:bg-gray-100 hover:text-gray-900 h-11 px-6 py-2 self-start sm:self-auto"
-              >
-                View All
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </div>
-            
-            {products.length === 0 ? (
-              <p className="text-center text-gray-600">No products available.</p>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {products.map((product) => (
-                  <ProductCard
-                    key={product._id.toString()}
-                    product={{
-                      ...product,
-                      _id: product._id.toString(),
-                      createdAt: product.createdAt?.toString(),
-                      updatedAt: product.updatedAt?.toString(),
-                    }}
-                  />
-                ))}
-              </div>
-            )}
+   <section className="py-24 lg:py-32">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12">
+        <div>
+          <h2 className="font-serif text-3xl sm:text-4xl font-medium text-gray-900">
+            Utvalda produkter
+          </h2>
+          <p className="mt-3 text-gray-600">
+            Noga utformade för de små
+          </p>
+        </div>
+        <Link
+          href="/shop"
+          className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium hover:bg-gray-100 hover:text-gray-900 h-11 px-6 py-2 self-start sm:self-auto"
+        >
+          Visa alla
+          <ArrowRight className="ml-2 h-4 w-4" />
+        </Link>
+      </div>
+
+        {products.length === 0 ? (
+          <p className="text-center text-gray-600">Inga produkter tillgängliga.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {products.map((product) => (
+              <ProductCard
+                key={product._id.toString()}
+                product={{
+                  ...product,
+                  _id: product._id.toString(),
+                  createdAt: product.createdAt?.toString(),
+                  updatedAt: product.updatedAt?.toString(),
+                }}
+              />
+            ))}
           </div>
-        </section>
+        )}
+      </div>
+    </section>
+
 
         {/* Values Section */}
         <ValuesSection />

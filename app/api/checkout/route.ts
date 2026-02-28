@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
   if (!process.env.STRIPE_SECRET_KEY) {
     return NextResponse.json(
       { error: "Stripe Secret Key missing" },
-      { status: 500 }
+      { status: 500 },
     );
   }
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -37,13 +37,13 @@ export async function POST(request: NextRequest) {
     if (!cartId || !successUrl || !cancelUrl) {
       return NextResponse.json(
         { error: "Missing parameters" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // Get cart and products
     const cart = await Cart.findOne({ sessionId: cartId }).populate(
-      "items.productId"
+      "items.productId",
     );
 
     if (!cart || cart.items.length === 0) {
@@ -57,8 +57,10 @@ export async function POST(request: NextRequest) {
       if (!prod) continue;
       if (item.quantity > (prod.stock || 0)) {
         return NextResponse.json(
-          { error: `Only ${prod.stock || 0} units of ${prod.name || "product"} remain` },
-          { status: 400 }
+          {
+            error: `Only ${prod.stock || 0} units of ${prod.name || "product"} remain`,
+          },
+          { status: 400 },
         );
       }
     }
@@ -78,13 +80,13 @@ export async function POST(request: NextRequest) {
         }
         return acc;
       },
-      []
+      [],
     );
 
     if (lineItems.length === 0) {
       return NextResponse.json(
         { error: "No valid products in cart" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 

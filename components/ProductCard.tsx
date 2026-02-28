@@ -187,11 +187,12 @@ export default function ProductCard({
                     {product.price} SEK
                   </span>
                 )}
-                {product.inStock && typeof (product as any).stock === 'number' && (
-                  <p className="text-xs text-gray-500 mt-1">
-                    {((product as any).stock)} kvar
-                  </p>
-                )}
+                {product.inStock &&
+                  typeof (product as any).stock === "number" && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      {(product as any).stock} kvar
+                    </p>
+                  )}
               </div>
 
               <button

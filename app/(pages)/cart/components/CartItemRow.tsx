@@ -1,6 +1,6 @@
-import Image from 'next/image';
-import { Trash2, Plus, Minus } from 'lucide-react';
-import type { CartItem } from '../types';
+import Image from "next/image";
+import { Trash2, Plus, Minus } from "lucide-react";
+import type { CartItem } from "../types";
 
 type Props = {
   item: CartItem;
@@ -31,11 +31,9 @@ export default function CartItemRow({
           </div>
         </div>
 
-    
         <div className="flex-1">
           {/* MOBILE LAYOUT */}
           <div className="md:hidden">
-           
             <div className="flex justify-between items-start mb-2">
               <h3 className="font-semibold text-base text-gray-900">
                 {item.name}
@@ -48,12 +46,11 @@ export default function CartItemRow({
                 <Trash2 className="w-5 h-5" />
               </button>
             </div>
-            
+
             <p className="text-green-600 font-bold text-base mb-3">
               {item.price} SEK
             </p>
-            
-          
+
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <button
@@ -84,28 +81,27 @@ export default function CartItemRow({
                   }
                   disabled={
                     updatingItem === item.productId ||
-                    (typeof item.stock === 'number' && item.quantity >= item.stock)
+                    (typeof item.stock === "number" &&
+                      item.quantity >= item.stock)
                   }
                   className="w-9 h-9 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
-              
+
               <div className="text-right">
                 <p className="text-base font-bold text-gray-900">
                   {item.quantity * item.price} SEK
                 </p>
               </div>
             </div>
-            
-           
+
             <p className="text-xs text-gray-500 mt-1">
               {item.quantity} × {item.price} SEK
             </p>
           </div>
 
-         
           <div className="hidden md:block">
             <div className="flex justify-between items-start">
               <div>
@@ -156,7 +152,8 @@ export default function CartItemRow({
                   }
                   disabled={
                     updatingItem === item.productId ||
-                    (typeof item.stock === 'number' && item.quantity >= item.stock)
+                    (typeof item.stock === "number" &&
+                      item.quantity >= item.stock)
                   }
                   className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg"
                 >

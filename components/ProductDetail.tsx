@@ -31,16 +31,16 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
   const addToCart = async () => {
     if (!cartId || !product.inStock) return;
-    
+
     setLoading(true);
     try {
       const res = await fetch("/api/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          cartId, 
-          productId: product._id, 
-          quantity 
+        body: JSON.stringify({
+          cartId,
+          productId: product._id,
+          quantity,
         }),
       });
       if (res.ok) {
@@ -132,19 +132,23 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
             {/* Descripción */}
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-gray-900">Description</h2>
-              <p className="text-gray-600 leading-relaxed">{product.description}</p>
+              <h2 className="text-lg font-semibold text-gray-900">
+                Description
+              </h2>
+              <p className="text-gray-600 leading-relaxed">
+                {product.description}
+              </p>
             </div>
 
             {/* Cantidad y knappar */}
-      {errorMessage && (
-        <ErrorModal
-          isOpen={!!errorMessage}
-          onClose={() => setErrorMessage(null)}
-          title="Lagervarning"
-          message={errorMessage}
-        />
-      )}
+            {errorMessage && (
+              <ErrorModal
+                isOpen={!!errorMessage}
+                onClose={() => setErrorMessage(null)}
+                title="Lagervarning"
+                message={errorMessage}
+              />
+            )}
             <div className="space-y-4 pt-4">
               <div className="flex items-center gap-4">
                 <div className="flex items-center border rounded-lg">
@@ -160,24 +164,27 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                   </span>
                   <button
                     onClick={() => {
-                      if (typeof product.stock === 'number') {
+                      if (typeof product.stock === "number") {
                         setQuantity(Math.min(quantity + 1, product.stock));
                       } else {
                         setQuantity(quantity + 1);
                       }
                     }}
-                    disabled={typeof product.stock === 'number' && quantity >= product.stock}
+                    disabled={
+                      typeof product.stock === "number" &&
+                      quantity >= product.stock
+                    }
                     className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                   >
                     +
                   </button>
                 </div>
-                
+
                 <div className="text-sm text-gray-500">
                   {product.inStock ? (
                     <>
                       <span className="text-green-600">✓ In stock</span>
-                      {typeof product.stock === 'number' && (
+                      {typeof product.stock === "number" && (
                         <span className="ml-2">({product.stock} kvar)</span>
                       )}
                     </>

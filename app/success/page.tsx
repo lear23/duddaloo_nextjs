@@ -19,9 +19,13 @@ export default function SuccessPage() {
       {/* fallback content in case modal is closed or for accessibility */}
       {!open && (
         <div className="max-w-md mx-auto p-8 text-center">
-          <h1 className="text-2xl font-bold text-green-600">Betalning slutförd!</h1>
+          <h1 className="text-2xl font-bold text-green-600">
+            Betalning slutförd!
+          </h1>
           <p>Tack för ditt köp.</p>
-          <Link href="/" className="text-blue-600 mt-4 inline-block">Tillbaka till butiken</Link>
+          <Link href="/" className="text-blue-600 mt-4 inline-block">
+            Tillbaka till butiken
+          </Link>
         </div>
       )}
     </>

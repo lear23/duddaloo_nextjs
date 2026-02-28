@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useCartId } from '@/lib/cartUtils';
-import { useEffect, useState } from 'react';
-import { CartData, CartItem } from './types';
-import CartItems from './components/CartItems';
-import LoadingCart from './components/LoadingCart';
-import EmptyCart from './components/EmtyCart';
-import OrderSummary from './components/OrderSumary';
-import ErrorModal from '@/components/ErrorModal';
+import { useCartId } from "@/lib/cartUtils";
+import { useEffect, useState } from "react";
+import { CartData, CartItem } from "./types";
+import CartItems from "./components/CartItems";
+import LoadingCart from "./components/LoadingCart";
+import EmptyCart from "./components/EmtyCart";
+import OrderSummary from "./components/OrderSumary";
+import ErrorModal from "@/components/ErrorModal";
 
 export default function CartPage() {
   const cartId = useCartId();
@@ -28,7 +28,7 @@ export default function CartPage() {
         const data: CartData = await res.json();
         setCart(data);
       } catch (error) {
-        console.error('Fel vid hämtning av varukorg:', error);
+        console.error("Fel vid hämtning av varukorg:", error);
         setCart({ items: [], totalItems: 0, totalPrice: 0 });
       } finally {
         setLoading(false);
@@ -42,22 +42,22 @@ export default function CartPage() {
     if (!cartId || newQuantity < 1) return;
     setUpdatingItem(productId);
     try {
-      const res = await fetch('/api/cart', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/cart", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cartId, productId, quantity: newQuantity }),
       });
       if (res.ok) {
         const updatedCart: CartData = await res.json();
         setCart(updatedCart);
-        window.dispatchEvent(new Event('cart-updated'));
+        window.dispatchEvent(new Event("cart-updated"));
       } else {
         const data = await res.json();
-        setErrorMessage(data.error || 'Unknown error');
+        setErrorMessage(data.error || "Unknown error");
       }
     } catch (error) {
-      console.error('Fel vid uppdatering av kvantitet:', error);
-      setErrorMessage('Nätverksfel vid uppdatering av kvantitet');
+      console.error("Fel vid uppdatering av kvantitet:", error);
+      setErrorMessage("Nätverksfel vid uppdatering av kvantitet");
     } finally {
       setUpdatingItem(null);
     }
@@ -68,18 +68,18 @@ export default function CartPage() {
     if (!cartId) return;
     setUpdatingItem(productId);
     try {
-      const res = await fetch('/api/cart', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/cart", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cartId, productId }),
       });
       if (res.ok) {
         const updatedCart: CartData = await res.json();
         setCart(updatedCart);
-        window.dispatchEvent(new Event('cart-updated'));
+        window.dispatchEvent(new Event("cart-updated"));
       }
     } catch (error) {
-      console.error('Fel vid borttagning av artikel:', error);
+      console.error("Fel vid borttagning av artikel:", error);
     } finally {
       setUpdatingItem(null);
     }
@@ -94,20 +94,20 @@ export default function CartPage() {
       setIsRedirecting(true);
       const successUrl = `${window.location.origin}/success`;
       const cancelUrl = `${window.location.origin}/cart`;
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cartId, successUrl, cancelUrl }),
       });
       const data = await res.json();
       if (data.url) {
         window.location.href = data.url;
       } else {
-        setCheckoutError(data.error || 'Okänt fel under betalning');
+        setCheckoutError(data.error || "Okänt fel under betalning");
         setIsRedirecting(false);
       }
     } catch {
-      setCheckoutError('Nätverksfel vid anslutning till betaltjänst');
+      setCheckoutError("Nätverksfel vid anslutning till betaltjänst");
       setIsRedirecting(false);
     }
   };
@@ -124,19 +124,20 @@ export default function CartPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Varukorg</h1>
           <p className="text-gray-600 mt-2">
-            {cart.totalItems} {cart.totalItems === 1 ? 'artikel' : 'artiklar'} i din varukorg
+            {cart.totalItems} {cart.totalItems === 1 ? "artikel" : "artiklar"} i
+            din varukorg
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {errorMessage && (
-          <ErrorModal
-            isOpen={!!errorMessage}
-            onClose={() => setErrorMessage(null)}
-            title="Lagervarning"
-            message={errorMessage}
-          />
-        )}
+          {errorMessage && (
+            <ErrorModal
+              isOpen={!!errorMessage}
+              onClose={() => setErrorMessage(null)}
+              title="Lagervarning"
+              message={errorMessage}
+            />
+          )}
           {/* Produktlista */}
           {checkoutError && (
             <ErrorModal

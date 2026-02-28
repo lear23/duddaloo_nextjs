@@ -44,7 +44,7 @@ async function getCartData(cartId: string) {
 
   const products: IProduct[] = await Product.find({ _id: { $in: productIds } });
   const productMap = new Map<string, IProduct>(
-    products.map((p) => [p._id.toString(), p])
+    products.map((p) => [p._id.toString(), p]),
   );
 
   let totalItems = 0;
@@ -73,7 +73,7 @@ async function getCartData(cartId: string) {
       }
       return acc;
     },
-    []
+    [],
   );
 
   return { items: populatedItems, totalItems, totalPrice };
@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
     console.error("❌ Error in GET /api/cart:", err);
     return NextResponse.json(
       { error: "Error loading cart", items: [], totalItems: 0, totalPrice: 0 },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -119,7 +119,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const item = cart.items.find(
-      (item: ICartItem) => item.productId.toString() === productId
+      (item: ICartItem) => item.productId.toString() === productId,
     );
 
     if (item) {
@@ -127,14 +127,14 @@ export async function PUT(request: NextRequest) {
       if (quantity > product.stock) {
         return NextResponse.json(
           { error: `Endast ${product.stock} stycken finns i lager` },
-          { status: 400 }
+          { status: 400 },
         );
       }
       item.quantity = quantity;
       // Si la cantidad es 0 o menor, eliminamos el item (seguridad adicional)
       if (item.quantity <= 0) {
         cart.items = cart.items.filter(
-          (i: ICartItem) => i.productId.toString() !== productId
+          (i: ICartItem) => i.productId.toString() !== productId,
         );
       }
     }
@@ -161,7 +161,7 @@ export async function DELETE(request: NextRequest) {
     const cart = await Cart.findOne({ sessionId: cartId });
     if (cart) {
       cart.items = cart.items.filter(
-        (item: ICartItem) => item.productId.toString() !== productId
+        (item: ICartItem) => item.productId.toString() !== productId,
       );
       await cart.save();
     }
@@ -183,7 +183,7 @@ export async function POST(request: NextRequest) {
     if (!cartId || !productId) {
       return NextResponse.json(
         { error: "Missing required data" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -200,14 +200,14 @@ export async function POST(request: NextRequest) {
     }
 
     const existingItem = cart.items.find(
-      (item: ICartItem) => item.productId.toString() === productId
+      (item: ICartItem) => item.productId.toString() === productId,
     );
 
     if (existingItem) {
       if (existingItem.quantity + quantity > available) {
         return NextResponse.json(
           { error: `Endast ${available} stycken finns i lager` },
-          { status: 400 }
+          { status: 400 },
         );
       }
       existingItem.quantity += quantity;
@@ -215,7 +215,7 @@ export async function POST(request: NextRequest) {
       if (quantity > available) {
         return NextResponse.json(
           { error: `Endast ${available} stycken finns i lager` },
-          { status: 400 }
+          { status: 400 },
         );
       }
       cart.items.push({ productId: new Types.ObjectId(productId), quantity });
@@ -227,7 +227,7 @@ export async function POST(request: NextRequest) {
     console.error("❌ Error in POST /api/cart:", err);
     return NextResponse.json(
       { error: "Error adding item to cart" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

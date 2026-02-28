@@ -7,6 +7,7 @@ import { useState } from "react";
 import { ShoppingCart, Heart, Eye } from "lucide-react";
 import Link from "next/link";
 import Toast from "./Toast";
+import ErrorModal from "./ErrorModal";
 
 export default function ProductCard({
   product,
@@ -18,6 +19,7 @@ export default function ProductCard({
     price: number;
     images: string[];
     inStock: boolean;
+    stock?: number;
     category?: string;
     rabatt?: boolean;
     discountPercentage?: number;
@@ -30,6 +32,7 @@ export default function ProductCard({
     message: string;
     type: "success" | "error" | "info";
   } | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const discountedPrice =
     product.rabatt && product.discountPercentage
@@ -43,13 +46,18 @@ export default function ProductCard({
     if (!cartId || !product.inStock) return;
     setLoading(true);
     try {
-      await fetch("/api/cart", {
+      const res = await fetch("/api/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cartId, productId: product._id, quantity: 1 }),
       });
-      window.dispatchEvent(new Event("cart-updated"));
-      setToast({ message: `${product.name} added to cart`, type: "success" });
+      if (res.ok) {
+        window.dispatchEvent(new Event("cart-updated"));
+        setToast({ message: `${product.name} added to cart`, type: "success" });
+      } else {
+        const data = await res.json();
+        setErrorMessage(data.error || "Error adding to cart");
+      }
     } catch {
       setToast({ message: "Error adding to cart", type: "error" });
     } finally {
@@ -74,6 +82,14 @@ export default function ProductCard({
           message={toast.message}
           type={toast.type}
           onClose={() => setToast(null)}
+        />
+      )}
+      {errorMessage && (
+        <ErrorModal
+          isOpen={!!errorMessage}
+          onClose={() => setErrorMessage(null)}
+          title="Lagervarning"
+          message={errorMessage}
         />
       )}
       <Link href={`/shop/${product._id}`} className="group block">
@@ -170,6 +186,11 @@ export default function ProductCard({
                   <span className="font-bold text-xl text-gray-900">
                     {product.price} SEK
                   </span>
+                )}
+                {product.inStock && typeof (product as any).stock === 'number' && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    {((product as any).stock)} kvar
+                  </p>
                 )}
               </div>
 

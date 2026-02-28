@@ -7,6 +7,7 @@ import CartItems from './components/CartItems';
 import LoadingCart from './components/LoadingCart';
 import EmptyCart from './components/EmtyCart';
 import OrderSummary from './components/OrderSumary';
+import ErrorModal from '@/components/ErrorModal';
 
 export default function CartPage() {
   const cartId = useCartId();
@@ -14,6 +15,7 @@ export default function CartPage() {
   const [loading, setLoading] = useState(true);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [updatingItem, setUpdatingItem] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Hämta varukorg
   useEffect(() => {
@@ -49,9 +51,13 @@ export default function CartPage() {
         const updatedCart: CartData = await res.json();
         setCart(updatedCart);
         window.dispatchEvent(new Event('cart-updated'));
+      } else {
+        const data = await res.json();
+        setErrorMessage(data.error || 'Unknown error');
       }
     } catch (error) {
       console.error('Fel vid uppdatering av kvantitet:', error);
+      setErrorMessage('Nätverksfel vid uppdatering av kvantitet');
     } finally {
       setUpdatingItem(null);
     }
@@ -80,6 +86,8 @@ export default function CartPage() {
   };
 
   // Gå till kassan
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
   const handleCheckout = async () => {
     if (!cartId) return;
     try {
@@ -95,11 +103,11 @@ export default function CartPage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        alert('Fel vid start av betalning: ' + (data.error || 'okänt fel'));
+        setCheckoutError(data.error || 'Okänt fel under betalning');
         setIsRedirecting(false);
       }
     } catch {
-      alert('Nätverksfel vid anslutning till betaltjänst');
+      setCheckoutError('Nätverksfel vid anslutning till betaltjänst');
       setIsRedirecting(false);
     }
   };
@@ -121,7 +129,23 @@ export default function CartPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {errorMessage && (
+          <ErrorModal
+            isOpen={!!errorMessage}
+            onClose={() => setErrorMessage(null)}
+            title="Lagervarning"
+            message={errorMessage}
+          />
+        )}
           {/* Produktlista */}
+          {checkoutError && (
+            <ErrorModal
+              isOpen={!!checkoutError}
+              onClose={() => setCheckoutError(null)}
+              title="Fel vid betalning"
+              message={checkoutError}
+            />
+          )}
           <div className="lg:col-span-2">
             <CartItems
               items={cart.items}

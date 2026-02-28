@@ -82,7 +82,10 @@ export default function CartItemRow({
                   onClick={() =>
                     updateQuantity(item.productId, item.quantity + 1)
                   }
-                  disabled={updatingItem === item.productId}
+                  disabled={
+                    updatingItem === item.productId ||
+                    (typeof item.stock === 'number' && item.quantity >= item.stock)
+                  }
                   className="w-9 h-9 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg"
                 >
                   <Plus className="w-4 h-4" />
@@ -151,7 +154,10 @@ export default function CartItemRow({
                   onClick={() =>
                     updateQuantity(item.productId, item.quantity + 1)
                   }
-                  disabled={updatingItem === item.productId}
+                  disabled={
+                    updatingItem === item.productId ||
+                    (typeof item.stock === 'number' && item.quantity >= item.stock)
+                  }
                   className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg"
                 >
                   <Plus className="w-4 h-4" />

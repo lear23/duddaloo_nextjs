@@ -10,11 +10,13 @@ import { Types } from "mongoose";
 interface IStripeProduct {
   _id: Types.ObjectId;
   stripeId: string;
+  stock?: number;
+  name?: string;
 }
 
 // 2. Interface for populated cart item
 interface IPopulatedCartItem {
-  productId: IStripeProduct;
+  productId: IStripeProduct | null;
   quantity: number;
 }
 
@@ -48,9 +50,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Empty cart" }, { status: 400 });
     }
 
+    // verify stock availability for each item
+    const cartItems = cart.items as IPopulatedCartItem[];
+    for (const item of cartItems) {
+      const prod = item.productId;
+      if (!prod) continue;
+      if (item.quantity > (prod.stock || 0)) {
+        return NextResponse.json(
+          { error: `Only ${prod.stock || 0} units of ${prod.name || "product"} remain` },
+          { status: 400 }
+        );
+      }
+    }
+
     // 3. Map with IPopulatedCartItem type
-    const lineItems = cart.items.reduce(
-      (acc: any[], item: IPopulatedCartItem) => {
+    type StripeLineItem = { price: string; quantity: number };
+    const lineItems = cartItems.reduce(
+      (acc: StripeLineItem[], item): StripeLineItem[] => {
         const product = item.productId;
 
         // Verificamos que el producto exista (no sea null) y tenga stripeId

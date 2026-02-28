@@ -17,6 +17,7 @@ interface CartItemResponse {
   price: number;
   image: string;
   quantity: number;
+  stock?: number; // available stock (optional)
 }
 
 // Interface for the Product model (simplified for the map)
@@ -25,6 +26,7 @@ interface IProduct {
   name: string;
   price: number;
   images: string[];
+  stock?: number;
 }
 // ::::::::::::::HELPER (move to helper) :::::::::::::::
 // Helper para obtener y formatear el carrito (reutilizable en GET, PUT, DELETE)
@@ -66,6 +68,7 @@ async function getCartData(cartId: string) {
           price: product.price,
           image: product.images?.[0] || "",
           quantity: item.quantity,
+          stock: product.stock,
         });
       }
       return acc;
@@ -109,11 +112,24 @@ export async function PUT(request: NextRequest) {
     if (!cart)
       return NextResponse.json({ error: "Cart not found" }, { status: 404 });
 
+    // also load product to validate stock
+    const product = await Product.findById(productId);
+    if (!product) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+
     const item = cart.items.find(
       (item: ICartItem) => item.productId.toString() === productId
     );
 
     if (item) {
+      // check if desired quantity exceeds available stock
+      if (quantity > product.stock) {
+        return NextResponse.json(
+          { error: `Endast ${product.stock} stycken finns i lager` },
+          { status: 400 }
+        );
+      }
       item.quantity = quantity;
       // Si la cantidad es 0 o menor, eliminamos el item (seguridad adicional)
       if (item.quantity <= 0) {
@@ -176,6 +192,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
+    // validate stock before modifying cart
+    const available = product.stock || 0;
     let cart = await Cart.findOne({ sessionId: cartId });
     if (!cart) {
       cart = new Cart({ sessionId: cartId, items: [] });
@@ -186,8 +204,20 @@ export async function POST(request: NextRequest) {
     );
 
     if (existingItem) {
+      if (existingItem.quantity + quantity > available) {
+        return NextResponse.json(
+          { error: `Endast ${available} stycken finns i lager` },
+          { status: 400 }
+        );
+      }
       existingItem.quantity += quantity;
     } else {
+      if (quantity > available) {
+        return NextResponse.json(
+          { error: `Endast ${available} stycken finns i lager` },
+          { status: 400 }
+        );
+      }
       cart.items.push({ productId: new Types.ObjectId(productId), quantity });
     }
 

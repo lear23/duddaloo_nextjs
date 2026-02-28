@@ -6,6 +6,7 @@ import { useState } from "react";
 import { ShoppingCart, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCartId } from "@/lib/cartUtils";
+import ErrorModal from "./ErrorModal";
 
 interface ProductDetailProps {
   product: {
@@ -15,6 +16,7 @@ interface ProductDetailProps {
     price: number;
     images: string[];
     inStock: boolean;
+    stock?: number;
   };
 }
 
@@ -25,13 +27,14 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const addToCart = async () => {
     if (!cartId || !product.inStock) return;
     
     setLoading(true);
     try {
-      await fetch("/api/cart", {
+      const res = await fetch("/api/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -40,11 +43,15 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           quantity 
         }),
       });
-      
-      window.dispatchEvent(new Event("cart-updated"));
-      alert(`✅ ${quantity} ${product.name} added to cart`);
+      if (res.ok) {
+        window.dispatchEvent(new Event("cart-updated"));
+        alert(`✅ ${quantity} ${product.name} added to cart`);
+      } else {
+        const data = await res.json();
+        setErrorMessage(data.error || "Error adding to cart");
+      }
     } catch (error) {
-      alert(`Error adding to cart: ${error}`);
+      setErrorMessage("Nätverksfel vid tilläggning till varukorg");
     } finally {
       setLoading(false);
     }
@@ -129,7 +136,15 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               <p className="text-gray-600 leading-relaxed">{product.description}</p>
             </div>
 
-            {/* Cantidad y botones */}
+            {/* Cantidad y knappar */}
+      {errorMessage && (
+        <ErrorModal
+          isOpen={!!errorMessage}
+          onClose={() => setErrorMessage(null)}
+          title="Lagervarning"
+          message={errorMessage}
+        />
+      )}
             <div className="space-y-4 pt-4">
               <div className="flex items-center gap-4">
                 <div className="flex items-center border rounded-lg">
@@ -144,7 +159,14 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                     {quantity}
                   </span>
                   <button
-                    onClick={() => setQuantity(quantity + 1)}
+                    onClick={() => {
+                      if (typeof product.stock === 'number') {
+                        setQuantity(Math.min(quantity + 1, product.stock));
+                      } else {
+                        setQuantity(quantity + 1);
+                      }
+                    }}
+                    disabled={typeof product.stock === 'number' && quantity >= product.stock}
                     className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                   >
                     +
@@ -153,7 +175,12 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 
                 <div className="text-sm text-gray-500">
                   {product.inStock ? (
-                    <span className="text-green-600">✓ In stock</span>
+                    <>
+                      <span className="text-green-600">✓ In stock</span>
+                      {typeof product.stock === 'number' && (
+                        <span className="ml-2">({product.stock} kvar)</span>
+                      )}
+                    </>
                   ) : (
                     <span className="text-red-600">✗ Out of stock</span>
                   )}

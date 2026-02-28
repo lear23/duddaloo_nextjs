@@ -7,11 +7,11 @@ import { hashPassword } from '@/lib/auth';
 export async function POST(request: Request) {
   await connectDB();
 
-  // Verificar si ya existe un admin (solo permitir uno)
+  // Kontrollera om det redan finns en admin (endast en tillåten)
   const existingUser = await User.findOne({});
   if (existingUser) {
     return NextResponse.json(
-      { error: 'Ya existe un administrador. Elimina /register.' },
+      { error: 'Det finns redan en administratör. Ta bort /register.' },
       { status: 400 }
     );
   }
@@ -19,24 +19,32 @@ export async function POST(request: Request) {
   const { email, password } = await request.json();
 
   if (!email || !password) {
-    return NextResponse.json({ error: 'Email y contraseña requeridos' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'E-post och lösenord krävs' },
+      { status: 400 }
+    );
   }
 
   try {
     const hashedPassword = await hashPassword(password);
     await User.create({ email, password: hashedPassword });
     return NextResponse.json({ success: true });
-  } catch (err: unknown) { // 1. Cambiamos 'any' por 'unknown'
-    
-    // 2. Comprobamos si el error es un objeto y tiene la propiedad 'code'
+  } catch (err: unknown) {
+    // Kontrollera om felet är ett objekt och har egenskapen 'code'
     if (err && typeof err === 'object' && 'code' in err) {
       if (err.code === 11000) {
-        return NextResponse.json({ error: 'Email ya registrado' }, { status: 400 });
+        return NextResponse.json(
+          { error: 'E-postadressen är redan registrerad' },
+          { status: 400 }
+        );
       }
     }
 
-    // Error genérico si no es el código 11000 o es otro tipo de error
-    console.error("Registration Error:", err);
-    return NextResponse.json({ error: 'Error interno' }, { status: 500 });
+    // Generellt fel om det inte är kod 11000 eller annan typ av fel
+    console.error("Registreringsfel:", err);
+    return NextResponse.json(
+      { error: 'Internt serverfel' },
+      { status: 500 }
+    );
   }
 }

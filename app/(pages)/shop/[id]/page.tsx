@@ -1,100 +1,78 @@
-// app/(pages)/shop/page.tsx
+// app/shop/[id]/page.tsx
 import Navbar from "@/components/Nabvar";
-import ProductCard from "@/components/ProductCard";
+import ProductDetail from "@/components/ProductDetail";
 import connectDB from "@/lib/db";
 import Product from "@/models/Product";
-import Category from "@/models/Category";
-import CategoryFilter from "../components/CategoryFilter";
+import { notFound } from "next/navigation";
 
+async function getProduct(id: string) {
+  console.log("🔍 Söker produkt med ID:", id);
 
-interface ShopPageProps {
-  searchParams: Promise<{ category?: string }>;
+  try {
+    await connectDB();
+    const product = await Product.findById(id).lean();
+
+    if (!product) {
+      console.log("❌ Produkt INTE funnen");
+      return null;
+    }
+
+    console.log("✅ Produkt FUNNEN:", product.name);
+
+    return {
+      ...product,
+      _id: product._id.toString(),
+      createdAt: product.createdAt?.toString(),
+      updatedAt: product.updatedAt?.toString(),
+    };
+  } catch (error) {
+    console.error("💥 Fel i getProduct:", error);
+    return null;
+  }
 }
 
-const ShopPage = async ({ searchParams }: ShopPageProps) => {
-  const { category } = await searchParams;
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  console.log("📱 generateMetadata - ID:", id);
 
-  await connectDB();
+  const product = await getProduct(id);
 
-  // Obtener categorías
-  const categories = await Category.find().sort({ name: 1 }).lean();
-
-  // CONSOLA PARA DEPURAR - mira aquí en la terminal
-  console.log("========== DEPURACIÓN ==========");
-  console.log("1. Categoría solicitada en URL:", category);
-  
-  // Ver qué categorías existen
-  console.log("2. Categorías en DB:", categories.map(c => ({ 
-    nombre: c.name, 
-    slug: c.slug 
-  })));
-  
-  // Ver TODOS los productos y su categoría REAL
-  const todosLosProductos = await Product.find({ inStock: true }).lean();
-  console.log("3. Productos y sus categorías:", todosLosProductos.map(p => ({
-    nombre: p.name,
-    categoriaGuardada: p.category,
-    tipo: typeof p.category
-  })));
-
-  // Filtrar
-  let productosFiltrados = todosLosProductos;
-  
-  if (category && category !== "alla") {
-    // Filtrar directamente comparando con lo que hay en DB
-    productosFiltrados = todosLosProductos.filter(p => 
-      p.category?.toLowerCase() === category.toLowerCase()
-    );
-    console.log(`4. Filtrando por "${category}" → ${productosFiltrados.length} productos`);
+  if (!product) {
+    return {
+      title: "Produkt hittades inte - Duddaloo",
+    };
   }
+
+  return {
+    title: `${product.name} - Duddaloo`,
+    description: product.description || "Vacker produkt för barn",
+    openGraph: {
+      title: product.name,
+      description: product.description,
+      images: product.images?.[0] ? [product.images[0]] : [],
+    },
+  };
+}
+
+export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  console.log("🚀 ProductPage körs");
+
+  const { id } = await params;
+  console.log("📋 Mottaget ID:", id);
+
+  const product = await getProduct(id);
+
+  if (!product) {
+    console.log("📛 Visar 404-sida");
+    notFound();
+  }
+
+  console.log("🎉 Renderar ProductDetail med:", product.name);
 
   return (
     <>
       <Navbar />
-      <div className="min-h-screen max-w-6xl mx-auto p-4 py-12">
-        <h1 className="text-6xl font-bold my-6">Produkter</h1>
-
-        {/* INFO TEMPORAL - muestra en pantalla */}
-        <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded text-sm">
-          <p><strong>Debug:</strong> Categoría: {category || "alla"} | Productos: {productosFiltrados.length}</p>
-          <p>Categorías guardadas: {[...new Set(todosLosProductos.map(p => p.category))].join(", ")}</p>
-        </div>
-
-        {categories.length > 0 && (
-          <CategoryFilter
-            categories={categories.map((cat) => ({
-              _id: cat._id.toString(),
-              name: cat.name,
-              slug: cat.slug,
-            }))}
-            currentCategory={category}
-          />
-        )}
-
-        {productosFiltrados.length === 0 ? (
-          <p className="text-center py-12 text-gray-500">
-            {category
-              ? "Inga produkter i denna kategori"
-              : "Inga produkter tillgängliga"}
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {productosFiltrados.map((product) => (
-              <ProductCard
-                key={product._id.toString()}
-                product={{
-                  ...product,
-                  _id: product._id.toString(),
-                  createdAt: product.createdAt?.toString(),
-                  updatedAt: product.updatedAt?.toString(),
-                }}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      <ProductDetail product={product} />
     </>
   );
-};
-
-export default ShopPage;
+}

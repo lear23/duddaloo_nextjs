@@ -17,15 +17,15 @@ const ShopPage = async ({ searchParams }: ShopPageProps) => {
 
   // Obtener todas las categorías
   const categories = await Category.find().sort({ name: 1 }).lean();
-  
+
   // Crear un mapa de slug -> _id para búsqueda rápida
   const categoryMap = new Map(
-    categories.map(cat => [cat.slug, cat._id.toString()])
+    categories.map((cat) => [cat.slug, cat._id.toString()]),
   );
 
   // Construir query para productos
   const query: { inStock: boolean; category?: string } = { inStock: true };
-  
+
   if (category && category !== "alla") {
     const categoryId = categoryMap.get(category);
     if (categoryId) {

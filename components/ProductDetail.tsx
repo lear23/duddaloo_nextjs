@@ -224,7 +224,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 </div>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex gap-3 mt-32">
                 <button
                   onClick={addToCart}
                   disabled={!product.inStock || loading}

@@ -1,10 +1,26 @@
+"use client";
 // app/success/page.tsx
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SuccessModal from "@/components/SuccessModal";
 
 export default function SuccessPage() {
   const [open, setOpen] = useState(true);
+
+  // clear cart on success page visit
+  useEffect(() => {
+    const cartId = localStorage.getItem("cart_id");
+    if (cartId) {
+      fetch("/api/cart", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cartId }),
+      }).catch((err) => {
+        console.error("Failed to clear cart on success page:", err);
+      });
+      localStorage.removeItem("cart_id");
+    }
+  }, []);
 
   return (
     <>

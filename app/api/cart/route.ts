@@ -29,7 +29,6 @@ interface IProduct {
   stock?: number;
 }
 // ::::::::::::::HELPER (move to helper) :::::::::::::::
-// Helper para obtener y formatear el carrito (reutilizable en GET, PUT, DELETE)
 async function getCartData(cartId: string) {
   const cart = await Cart.findOne({ sessionId: cartId });
 
@@ -227,6 +226,27 @@ export async function POST(request: NextRequest) {
     console.error("❌ Error in POST /api/cart:", err);
     return NextResponse.json(
       { error: "Error adding item to cart" },
+      { status: 500 },
+    );
+  }
+}
+
+// new handler to clear an entire cart
+export async function PATCH(request: NextRequest) {
+  try {
+    await connectDB();
+    const { cartId } = await request.json();
+
+    if (!cartId) {
+      return NextResponse.json({ error: "Missing cartId" }, { status: 400 });
+    }
+
+    await Cart.findOneAndDelete({ sessionId: cartId });
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("❌ Error clearing cart:", err);
+    return NextResponse.json(
+      { error: "Failed to clear cart" },
       { status: 500 },
     );
   }

@@ -52,7 +52,7 @@ const ValuesSection = () => {
           {values.map((value, index) => (
             <div
               key={value.title}
-              className={`text-center p-8 rounded-2xl ${value.bgColor} shadow-lg`} // Aquí aplicamos el color de fondo de la tarjeta
+              className={`text-center p-8 rounded-2xl ${value.bgColor} shadow-lg`} 
             >
               <div
                 className={`inline-flex items-center justify-center w-14 h-14 rounded-xl ${value.iconBgColor} mb-6 shadow-md`}

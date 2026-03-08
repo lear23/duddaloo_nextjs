@@ -3,6 +3,7 @@ import Navbar from "@/components/Nabvar";
 import ProductDetail from "@/components/ProductDetail";
 import connectDB from "@/lib/db";
 import Product from "@/models/Product";
+import Category from "@/models/Category";
 import { notFound } from "next/navigation";
 
 async function getProduct(id: string) {
@@ -17,6 +18,12 @@ async function getProduct(id: string) {
       return null;
     }
 
+    // Obtener los tamaños de la categoría
+    let categoryData = null;
+    if (product.category) {
+      categoryData = await Category.findById(product.category).lean();
+    }
+
     console.log("✅ Produkt FUNNEN:", product.name);
 
     return {
@@ -24,6 +31,7 @@ async function getProduct(id: string) {
       _id: product._id.toString(),
       createdAt: product.createdAt?.toString(),
       updatedAt: product.updatedAt?.toString(),
+      sizes: categoryData?.sizes || [],
     };
   } catch (error) {
     console.error("💥 Fel i getProduct:", error);
@@ -31,7 +39,11 @@ async function getProduct(id: string) {
   }
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   console.log("📱 generateMetadata - ID:", id);
 
@@ -54,7 +66,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
-export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   console.log("🚀 ProductPage körs");
 
   const { id } = await params;

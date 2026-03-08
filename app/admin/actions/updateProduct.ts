@@ -82,9 +82,11 @@ export async function updateProduct(prevState: unknown, formData: FormData) {
 
     // 3. Crear el payload usando la interfaz definida arriba
     // Extraemos el 'id' para no enviarlo dentro del cuerpo del update
-    const { id: _, ...rest } = validated;
     const updatePayload: UpdatePayload = {
-      ...rest,
+      name: validated.name,
+      description: validated.description,
+      price: validated.price,
+      stock: validated.stock,
       inStock: validated.stock > 0 ? true : false, // Derive inStock from stock
       category: validated.category,
       rabatt: validated.rabatt || false,

@@ -1,7 +1,7 @@
 // app/admin/components/CategoryList.tsx
 import connectDB from "@/lib/db";
 import Category from "@/models/Category";
-import DeleteCategoryButton from "./DeleteCategoryButton";
+import EditCategoryForm from "./EditCategoryForm";
 
 export default async function CategoryList() {
   await connectDB();
@@ -14,16 +14,15 @@ export default async function CategoryList() {
   return (
     <div className="space-y-2">
       {(categories as any[]).map((category) => (
-        <div
+        <EditCategoryForm
           key={category._id.toString()}
-          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border"
-        >
-          <div>
-            <p className="font-semibold">{category.name}</p>
-            <p className="text-sm text-gray-600">{category.slug}</p>
-          </div>
-          <DeleteCategoryButton categoryId={category._id.toString()} />
-        </div>
+          category={{
+            _id: category._id.toString(),
+            name: category.name,
+            description: category.description,
+            sizes: category.sizes,
+          }}
+        />
       ))}
     </div>
   );

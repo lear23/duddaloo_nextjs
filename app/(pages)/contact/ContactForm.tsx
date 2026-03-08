@@ -14,7 +14,7 @@ const ContactForm = () => {
     const subject = formData.get('subject');
     const message = formData.get('message');
 
-    // Cuerpo del email en sueco
+   
     const mailtoLink = `mailto:team@duddaloos.se?subject=${encodeURIComponent(subject as string)}&body=${encodeURIComponent(
       `Namn: ${name}\nE-post: ${email}\n\nMeddelande:\n${message}`
     )}`;

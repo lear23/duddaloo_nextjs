@@ -78,6 +78,22 @@ export default function CreateCategoryForm() {
         />
       </div>
 
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          📏 Tamaños disponibles (opcional)
+        </label>
+        <input
+          type="text"
+          name="sizes"
+          className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+          placeholder="e.g., XS, S, M, L, XL (separados por comas)"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          Si esta categoría tiene variaciones de tamaño, ingresalas aquí. Dejar
+          en blanco si no aplica (ej: Libros).
+        </p>
+      </div>
+
       <SubmitButton />
     </form>
   );

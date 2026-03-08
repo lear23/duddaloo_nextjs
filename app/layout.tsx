@@ -15,6 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  // 🔥 AÑADE ESTA LÍNEA - la URL base de tu sitio
+  metadataBase: new URL('https://duddaloos.se'), // Cambia por tu dominio real
   title: "Duddaloos",
   description: "Pedagogiska posters och material för barn",
   icons: {
@@ -26,7 +28,7 @@ export const metadata: Metadata = {
     description: "Pedagogiska posters och material för barn",
     images: [
       {
-        url: "/logo-domain.png",
+        url: "/logo-domain.png", // Ahora esto se convertirá automáticamente en https://duddaloos.se/logo-domain.png
         width: 1200,
         height: 630,
         alt: "Duddaloos logo",

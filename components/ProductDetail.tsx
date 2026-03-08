@@ -15,6 +15,7 @@ interface Product {
   images: string[];
   inStock: boolean;
   stock?: number;
+  sizes?: string[];
 }
 
 interface ProductDetailProps {
@@ -25,6 +26,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   const router = useRouter();
   const cartId = useCartId();
   const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -60,41 +62,40 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
   return (
     <div className="min-h-screen bg-white relative">
-   {/* CENTRERAD FRAMGÅNGSMODAL */}
-    {showSuccessModal && (
-      <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-        <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center relative animate-in zoom-in-95 duration-300">
-          <button
-            onClick={() => setShowSuccessModal(false)}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-          >
-            <X className="h-6 w-6" />
-          </button>
-          <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 mb-6">
-            <CheckCircle2 className="h-12 w-12 text-green-600" />
-          </div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-2">Tillagt!</h3>
-          <p className="text-gray-600 mb-8">
-            {quantity}x {product.name} har lagts till i din varukorg.
-          </p>
-          <div className="flex flex-col gap-3">
-            <button
-              onClick={() => router.push("/cart")}
-              className="w-full py-4 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 transition-all shadow-lg shadow-purple-200 active:scale-[0.98]"
-            >
-              Gå till varukorgen
-            </button>
+      {/* CENTRERAD FRAMGÅNGSMODAL */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center relative animate-in zoom-in-95 duration-300">
             <button
               onClick={() => setShowSuccessModal(false)}
-              className="w-full py-3 text-gray-500 font-medium hover:text-gray-800 transition-colors"
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
             >
-              Fortsätt handla
+              <X className="h-6 w-6" />
             </button>
+            <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 mb-6">
+              <CheckCircle2 className="h-12 w-12 text-green-600" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Tillagt!</h3>
+            <p className="text-gray-600 mb-8">
+              {quantity}x {product.name} har lagts till i din varukorg.
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => router.push("/cart")}
+                className="w-full py-4 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 transition-all shadow-lg shadow-purple-200 active:scale-[0.98]"
+              >
+                Gå till varukorgen
+              </button>
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className="w-full py-3 text-gray-500 font-medium hover:text-gray-800 transition-colors"
+              >
+                Fortsätt handla
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    )}
-
+      )}
 
       <div className="container mx-auto px-4 py-8">
         <button
@@ -177,6 +178,29 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 title="Lagervarning"
                 message={errorMessage}
               />
+            )}
+
+            {product.sizes && product.sizes.length > 0 && (
+              <div className="space-y-3 pt-4 border-t border-gray-200">
+                <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                  📏 Välj storlek
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {product.sizes.map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(size)}
+                      className={`px-4 py-2 rounded-lg border-2 font-medium transition-all ${
+                        selectedSize === size
+                          ? "border-purple-600 bg-purple-50 text-purple-600"
+                          : "border-gray-300 bg-white text-gray-700 hover:border-purple-300"
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
             )}
 
             <div className="space-y-4 pt-4">

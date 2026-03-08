@@ -52,7 +52,7 @@ export default function Navbar() {
   }, [isMenuOpen]);
 
   return (
-    <nav className="border-b border-gray-200 shadow-xl relative">
+    <nav className="border-b border-gray-200 shadow-xl relative bg-[#F8F6F2]">
       <div className="max-w-6xl mx-auto flex justify-between items-center p-4">
         
         {/* Logo */}
@@ -60,8 +60,8 @@ export default function Navbar() {
           <Image
             src="/logoduddaloo.svg"
             alt="affars logo"
-            width={120}
-            height={120}
+            width={80}
+            height={80}
             priority
           />
         </Link>

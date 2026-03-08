@@ -6,6 +6,7 @@ export interface ICategory {
   name: string;
   slug: string;
   description?: string;
+  sizes?: string[];
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -15,6 +16,7 @@ const categorySchema = new Schema<ICategory>(
     name: { type: String, required: true, unique: true },
     slug: { type: String, required: true, unique: true },
     description: { type: String },
+    sizes: [{ type: String }],
   },
   { timestamps: true },
 );

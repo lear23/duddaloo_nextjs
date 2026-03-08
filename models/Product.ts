@@ -10,7 +10,7 @@ export interface IProduct {
   images: string[];
   inStock: boolean;
   stock: number;
-  category: string; 
+  category: string;
   rabatt: boolean;
   discountPercentage: number;
   createdAt?: Date;

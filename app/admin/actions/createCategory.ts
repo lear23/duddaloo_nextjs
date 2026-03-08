@@ -13,6 +13,11 @@ export async function createCategory(prevState: any, formData: FormData) {
       (formData.get("slug") as string) ||
       name.toLowerCase().replace(/\s+/g, "-");
     const description = formData.get("description") as string;
+    const sizesInput = (formData.get("sizes") as string)?.trim() || "";
+    const sizes = sizesInput
+      .split(",")
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
 
     if (!name) {
       return {
@@ -33,6 +38,7 @@ export async function createCategory(prevState: any, formData: FormData) {
       name,
       slug,
       description,
+      sizes: sizes.length > 0 ? sizes : [],
     });
 
     await category.save();

@@ -35,7 +35,7 @@ const ValuesSection = () => {
   ];
 
   return (
-    <section className="py-24 lg:py-32 bg-[#F8F6F2]">
+    <section className="py-24 lg:py-32 ">
       {/* Yttre container för centrerad layout */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Fokus på rubriksektionen */}

@@ -1,4 +1,4 @@
-import Navbar from '@/components/Nabvar';
+import Navbar from '@/components/Navbar';
 import ContactForm from './ContactForm';
 
 const ContactPage = () => {

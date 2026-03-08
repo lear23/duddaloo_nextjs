@@ -5,7 +5,7 @@ import { ArrowRight} from 'lucide-react';
 import connectDB from '@/lib/db';
 import Product from '@/models/Product';
 import ProductCard from '@/components/ProductCard';
-import Navbar from '@/components/Nabvar';
+import Navbar from '@/components/Navbar';
 import ValuesSection from '@/components/ValuesSection';
 
 

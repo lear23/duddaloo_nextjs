@@ -1,5 +1,5 @@
 // app/(pages)/shop/page.tsx
-import Navbar from "@/components/Nabvar";
+import Navbar from "@/components/Navbar";
 import ProductCard from "@/components/ProductCard";
 import connectDB from "@/lib/db";
 import Product from "@/models/Product";

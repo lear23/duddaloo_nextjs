@@ -4,6 +4,7 @@ import { Schema, model, models, Types } from "mongoose";
 export interface ICartItem {
   productId: Types.ObjectId | string;
   quantity: number;
+  size?: string;
 }
 
 export interface ICart {
@@ -17,6 +18,7 @@ export interface ICart {
 const cartItemSchema = new Schema<ICartItem>({
   productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
   quantity: { type: Number, required: true, min: 1, default: 1 },
+  size: { type: String },
 });
 
 const cartSchema = new Schema<ICart>(
@@ -24,7 +26,7 @@ const cartSchema = new Schema<ICart>(
     sessionId: { type: String, required: true, index: true },
     items: [cartItemSchema],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Cart = models.Cart || model("Cart", cartSchema);

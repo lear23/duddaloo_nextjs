@@ -38,14 +38,23 @@ export default function CartPage() {
   }, [cartId]);
 
   // Uppdatera kvantitet
-  const updateQuantity = async (productId: string, newQuantity: number) => {
+  const updateQuantity = async (
+    productId: string,
+    newQuantity: number,
+    size?: string,
+  ) => {
     if (!cartId || newQuantity < 1) return;
-    setUpdatingItem(productId);
+    setUpdatingItem(`${productId}-${size || "no-size"}`);
     try {
       const res = await fetch("/api/cart", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cartId, productId, quantity: newQuantity }),
+        body: JSON.stringify({
+          cartId,
+          productId,
+          quantity: newQuantity,
+          size,
+        }),
       });
       if (res.ok) {
         const updatedCart: CartData = await res.json();
@@ -64,14 +73,14 @@ export default function CartPage() {
   };
 
   // Ta bort artikel
-  const removeItem = async (productId: string) => {
+  const removeItem = async (productId: string, size?: string) => {
     if (!cartId) return;
-    setUpdatingItem(productId);
+    setUpdatingItem(`${productId}-${size || "no-size"}`);
     try {
       const res = await fetch("/api/cart", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cartId, productId }),
+        body: JSON.stringify({ cartId, productId, size }),
       });
       if (res.ok) {
         const updatedCart: CartData = await res.json();

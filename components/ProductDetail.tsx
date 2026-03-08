@@ -35,6 +35,14 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   const addToCart = async () => {
     if (!cartId || !product.inStock) return;
 
+    // Validar que se seleccionó un tamaño si es requerido
+    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+      setErrorMessage(
+        "Por favor selecciona un tamaño antes de agregar al carrito",
+      );
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await fetch("/api/cart", {
@@ -44,6 +52,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           cartId,
           productId: product._id,
           quantity,
+          size: selectedSize,
         }),
       });
       if (res.ok) {

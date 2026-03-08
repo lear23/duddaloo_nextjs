@@ -5,8 +5,8 @@ import type { CartItem } from "../types";
 type Props = {
   item: CartItem;
   updatingItem: string | null;
-  updateQuantity: (productId: string, quantity: number) => void;
-  removeItem: (productId: string) => void;
+  updateQuantity: (productId: string, quantity: number, size?: string) => void;
+  removeItem: (productId: string, size?: string) => void;
 };
 
 export default function CartItemRow({
@@ -39,13 +39,21 @@ export default function CartItemRow({
                 {item.name}
               </h3>
               <button
-                onClick={() => removeItem(item.productId)}
-                disabled={updatingItem === item.productId}
+                onClick={() => removeItem(item.productId, item.size)}
+                disabled={
+                  updatingItem === `${item.productId}-${item.size || "no-size"}`
+                }
                 className="text-gray-400 hover:text-red-500 p-1 -mt-1 -mr-1"
               >
                 <Trash2 className="w-5 h-5" />
               </button>
             </div>
+
+            {item.size && (
+              <p className="text-xs text-gray-500 mb-2">
+                📏 Tamaño: {item.size}
+              </p>
+            )}
 
             <p className="text-green-600 font-bold text-base mb-3">
               {item.price} SEK
@@ -55,10 +63,12 @@ export default function CartItemRow({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() =>
-                    updateQuantity(item.productId, item.quantity - 1)
+                    updateQuantity(item.productId, item.quantity - 1, item.size)
                   }
                   disabled={
-                    updatingItem === item.productId || item.quantity <= 1
+                    updatingItem ===
+                      `${item.productId}-${item.size || "no-size"}` ||
+                    item.quantity <= 1
                   }
                   className="w-9 h-9 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg"
                 >
@@ -77,10 +87,11 @@ export default function CartItemRow({
 
                 <button
                   onClick={() =>
-                    updateQuantity(item.productId, item.quantity + 1)
+                    updateQuantity(item.productId, item.quantity + 1, item.size)
                   }
                   disabled={
-                    updatingItem === item.productId ||
+                    updatingItem ===
+                      `${item.productId}-${item.size || "no-size"}` ||
                     (typeof item.stock === "number" &&
                       item.quantity >= item.stock)
                   }
@@ -108,14 +119,21 @@ export default function CartItemRow({
                 <h3 className="font-semibold text-lg text-gray-900 mb-1">
                   {item.name}
                 </h3>
+                {item.size && (
+                  <p className="text-xs text-gray-500 mb-2">
+                    📏 Tamaño: {item.size}
+                  </p>
+                )}
                 <p className="text-green-600 font-bold text-lg">
                   {item.price} SEK
                 </p>
               </div>
 
               <button
-                onClick={() => removeItem(item.productId)}
-                disabled={updatingItem === item.productId}
+                onClick={() => removeItem(item.productId, item.size)}
+                disabled={
+                  updatingItem === `${item.productId}-${item.size || "no-size"}`
+                }
                 className="text-gray-400 hover:text-red-500 p-2 rounded-lg hover:bg-red-50 transition-colors"
               >
                 <Trash2 className="w-5 h-5" />
@@ -126,10 +144,12 @@ export default function CartItemRow({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() =>
-                    updateQuantity(item.productId, item.quantity - 1)
+                    updateQuantity(item.productId, item.quantity - 1, item.size)
                   }
                   disabled={
-                    updatingItem === item.productId || item.quantity <= 1
+                    updatingItem ===
+                      `${item.productId}-${item.size || "no-size"}` ||
+                    item.quantity <= 1
                   }
                   className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg"
                 >
@@ -148,10 +168,11 @@ export default function CartItemRow({
 
                 <button
                   onClick={() =>
-                    updateQuantity(item.productId, item.quantity + 1)
+                    updateQuantity(item.productId, item.quantity + 1, item.size)
                   }
                   disabled={
-                    updatingItem === item.productId ||
+                    updatingItem ===
+                      `${item.productId}-${item.size || "no-size"}` ||
                     (typeof item.stock === "number" &&
                       item.quantity >= item.stock)
                   }

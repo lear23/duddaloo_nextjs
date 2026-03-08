@@ -8,6 +8,7 @@ import { Types } from "mongoose";
 interface ICartItem {
   productId: Types.ObjectId;
   quantity: number;
+  size?: string;
 }
 
 // Interface for the final response to the frontend
@@ -17,6 +18,7 @@ interface CartItemResponse {
   price: number;
   image: string;
   quantity: number;
+  size?: string;
   stock?: number; // available stock (optional)
 }
 
@@ -67,6 +69,7 @@ async function getCartData(cartId: string) {
           price: product.price,
           image: product.images?.[0] || "",
           quantity: item.quantity,
+          size: item.size,
           stock: product.stock,
         });
       }
@@ -101,7 +104,7 @@ export async function GET(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     await connectDB();
-    const { cartId, productId, quantity } = await request.json();
+    const { cartId, productId, quantity, size } = await request.json();
 
     if (!cartId || !productId || typeof quantity !== "number") {
       return NextResponse.json({ error: "Invalid data" }, { status: 400 });
@@ -118,7 +121,8 @@ export async function PUT(request: NextRequest) {
     }
 
     const item = cart.items.find(
-      (item: ICartItem) => item.productId.toString() === productId,
+      (item: ICartItem) =>
+        item.productId.toString() === productId && item.size === size,
     );
 
     if (item) {
@@ -133,7 +137,8 @@ export async function PUT(request: NextRequest) {
       // Si la cantidad es 0 o menor, eliminamos el item (seguridad adicional)
       if (item.quantity <= 0) {
         cart.items = cart.items.filter(
-          (i: ICartItem) => i.productId.toString() !== productId,
+          (i: ICartItem) =>
+            !(i.productId.toString() === productId && i.size === size),
         );
       }
     }
@@ -151,7 +156,7 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     await connectDB();
-    const { cartId, productId } = await request.json();
+    const { cartId, productId, size } = await request.json();
 
     if (!cartId || !productId) {
       return NextResponse.json({ error: "Missing data" }, { status: 400 });
@@ -160,7 +165,8 @@ export async function DELETE(request: NextRequest) {
     const cart = await Cart.findOne({ sessionId: cartId });
     if (cart) {
       cart.items = cart.items.filter(
-        (item: ICartItem) => item.productId.toString() !== productId,
+        (item: ICartItem) =>
+          !(item.productId.toString() === productId && item.size === size),
       );
       await cart.save();
     }
@@ -177,7 +183,7 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB();
     const body = await request.json();
-    const { cartId, productId, quantity = 1 } = body;
+    const { cartId, productId, quantity = 1, size } = body;
 
     if (!cartId || !productId) {
       return NextResponse.json(
@@ -198,8 +204,10 @@ export async function POST(request: NextRequest) {
       cart = new Cart({ sessionId: cartId, items: [] });
     }
 
+    // Buscar item existente considerando TANTO productId como size
     const existingItem = cart.items.find(
-      (item: ICartItem) => item.productId.toString() === productId,
+      (item: ICartItem) =>
+        item.productId.toString() === productId && item.size === size,
     );
 
     if (existingItem) {
@@ -217,7 +225,11 @@ export async function POST(request: NextRequest) {
           { status: 400 },
         );
       }
-      cart.items.push({ productId: new Types.ObjectId(productId), quantity });
+      cart.items.push({
+        productId: new Types.ObjectId(productId),
+        quantity,
+        size: size || undefined,
+      });
     }
 
     await cart.save();

@@ -98,15 +98,29 @@ export default function CartPage() {
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const handleCheckout = async () => {
-    if (!cartId) return;
+    if (!cartId || !cart) return;
     try {
       setIsRedirecting(true);
+
+      // Calculate shipping cost
+      const SHIPPING_THRESHOLD = 1000;
+      const SHIPPING_COST = 69;
+      const shippingCost =
+        cart.totalPrice >= SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+      const totalWithShipping = cart.totalPrice + shippingCost;
+
       const successUrl = `${window.location.origin}/success`;
       const cancelUrl = `${window.location.origin}/cart`;
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cartId, successUrl, cancelUrl }),
+        body: JSON.stringify({
+          cartId,
+          successUrl,
+          cancelUrl,
+          cartTotal: cart.totalPrice,
+          shippingCost,
+        }),
       });
       const data = await res.json();
       if (data.url) {

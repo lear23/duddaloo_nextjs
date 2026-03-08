@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { ShoppingCart, ArrowLeft, CheckCircle2, X } from "lucide-react";
+import { ShoppingCart, ArrowLeft, CheckCircle2, X, Check, Leaf, Truck, RefreshCw, Shield } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCartId } from "@/lib/cartUtils";
 import ErrorModal from "./ErrorModal";
@@ -35,10 +35,10 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   const addToCart = async () => {
     if (!cartId || !product.inStock) return;
 
-    // Validar que se seleccionó un tamaño si es requerido
+    // Validera att en storlek har valts om det krävs
     if (product.sizes && product.sizes.length > 0 && !selectedSize) {
       setErrorMessage(
-        "Por favor selecciona un tamaño antes de agregar al carrito",
+        "Vänligen välj en storlek innan du lägger till i varukorgen",
       );
       return;
     }
@@ -159,7 +159,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             )}
           </div>
 
-          <div className="py-12 space-y-8 lg:space-y-12">
+          <div className="py-12 space-y-4 lg:space-y-8">
             <div>
               <h1 className="font-serif text-3xl lg:text-4xl font-bold text-gray-900">
                 {product.name}
@@ -257,7 +257,29 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 </div>
               </div>
 
-              <div className="flex gap-3 mt-32">
+              {/* 🔥 SECCIÓN MEJORADA 1: Productspecifikationer med gröna ikoner */}
+              <div className="bg-gray-50 rounded-xl p-4 space-y-2 border border-gray-100">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 text-green-600">
+                    <Check className="h-5 w-5" />
+                  </div>
+                  <p className="text-gray-700">Silk Premiumpapper</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 text-green-600">
+                    <Check className="h-5 w-5" />
+                  </div>
+                  <p className="text-gray-700">Producerat i Sverige</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 text-green-600">
+                    <Check className="h-5 w-5" />
+                  </div>
+                  <p className="text-gray-700">Åldringsbeständigt papper</p>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-8">
                 <button
                   onClick={addToCart}
                   disabled={!product.inStock || loading}
@@ -279,6 +301,28 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                     </>
                   )}
                 </button>
+              </div>
+
+              {/* 🔥 SECCIÓN MEJORADA 2: Leveransinformation med gröna ikoner */}
+              <div className="bg-gray-50 rounded-xl p-4 space-y-2 border border-gray-100">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 text-green-600">
+                    <Truck className="h-5 w-5" />
+                  </div>
+                  <p className="text-gray-700">Leverans 7-14 arbetsdagar</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 text-green-600">
+                    <Truck className="h-5 w-5" />
+                  </div>
+                  <p className="text-gray-700">Fri frakt över 1000kr</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 text-green-600">
+                    <RefreshCw className="h-5 w-5" />
+                  </div>
+                  <p className="text-gray-700">Öppet köp i 14 dagar</p>
+                </div>
               </div>
             </div>
           </div>

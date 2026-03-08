@@ -32,7 +32,8 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB();
 
-    const { cartId, successUrl, cancelUrl } = await request.json();
+    const { cartId, successUrl, cancelUrl, shippingCost } =
+      await request.json();
 
     if (!cartId || !successUrl || !cancelUrl) {
       return NextResponse.json(
@@ -40,6 +41,11 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
+
+    // Default shipping cost if not provided
+    const finalShippingCost =
+      typeof shippingCost === "number" ? shippingCost : 69;
+    const shippingAmountInOre = finalShippingCost * 100; // Convert to öre (smallest unit)
 
     // Get cart and products
     const cart = await Cart.findOne({ sessionId: cartId }).populate(
@@ -90,33 +96,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create Stripe payment session
+    // Create Stripe payment session with dynamic shipping
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: [
-        "card",
-        "klarna",
-        "paypal",
-        // Apple Pay y Google Pay se muestran dinámicamente si el cliente usa un dispositivo compatible.
-      ],
+      payment_method_types: ["card", "klarna", "paypal"],
       line_items: lineItems,
       mode: "payment",
       success_url: successUrl,
       cancel_url: cancelUrl,
       metadata: { cartId },
-      // 1. Recoger dirección de envío
+      // Collect shipping address
       shipping_address_collection: {
-        allowed_countries: ["SE", "ES", "US"], // Ajusta los países a los que vendes
+        allowed_countries: ["SE", "ES", "US"],
       },
-      // 2. Opciones de envío
+      // Dynamic shipping options based on cart total
       shipping_options: [
         {
           shipping_rate_data: {
             type: "fixed_amount",
             fixed_amount: {
-              amount: 0, // Gratis
+              amount: shippingAmountInOre,
               currency: "sek",
             },
-            display_name: "Free Shipping",
+            display_name:
+              finalShippingCost === 0
+                ? "Fri frakt"
+                : `Standard frakt (${finalShippingCost} SEK)`,
             delivery_estimate: {
               minimum: { unit: "business_day", value: 5 },
               maximum: { unit: "business_day", value: 7 },

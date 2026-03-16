@@ -8,6 +8,9 @@ import Link from "next/link";
 import Toast from "./Toast";
 import ErrorModal from "./ErrorModal";
 
+// ✅ Definimos la URL de tu Supabase aquí
+const BUCKET_URL = "https://sszyfwfazrxewdarezbn.supabase.co/storage/v1/object/public/duddallos_products/";
+
 interface Product {
   _id: string;
   name: string;
@@ -39,7 +42,16 @@ export default function ProductCard({ product }: { product: Product }) {
   const [categoryName, setCategoryName] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
 
-  // Cargar categorías al montar el componente
+  // Lógica para determinar la URL de la imagen (Supabase o Local)
+  const getImageUrl = (imagePath: string) => {
+    if (!imagePath) return null;
+    // Si ya es una URL completa (http...), la usamos tal cual
+    if (imagePath.startsWith('http')) return imagePath;
+    // Si es una ruta de /uploads/, extraemos solo el nombre del archivo y le ponemos la URL de Supabase
+    const fileName = imagePath.split('/').pop();
+    return `${BUCKET_URL}${fileName}`;
+  };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -55,7 +67,6 @@ export default function ProductCard({ product }: { product: Product }) {
     fetchCategories();
   }, []);
 
-  // Buscar el nombre de la categoría cuando tenemos el ID
   useEffect(() => {
     if (product.category && categories.length > 0) {
       const foundCategory = categories.find(c => c._id === product.category);
@@ -106,6 +117,8 @@ export default function ProductCard({ product }: { product: Product }) {
     });
   };
 
+  const mainImage = getImageUrl(product.images[0]);
+
   return (
     <>
       {toast && (
@@ -125,7 +138,6 @@ export default function ProductCard({ product }: { product: Product }) {
       )}
       <Link href={`/shop/${product._id}`} className="group block">
         <div className="relative overflow-hidden rounded-2xl bg-gray-50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-          {/* Kampanj - siempre visible si hay rabatt */}
           {product.rabatt && product.discountPercentage && (
             <div className="absolute top-3 left-3 z-10">
               <span className="inline-block px-3 py-1 text-xs font-bold rounded-full bg-red-500 text-white shadow-lg">
@@ -134,7 +146,6 @@ export default function ProductCard({ product }: { product: Product }) {
             </div>
           )}
 
-          {/* Categoría - solo si existe y NO hay kampanj */}
           {categoryName && !product.rabatt && (
             <div className="absolute top-3 left-3 z-10">
               <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-white/90 backdrop-blur-sm text-gray-700">
@@ -171,13 +182,14 @@ export default function ProductCard({ product }: { product: Product }) {
           </div>
 
           <div className="relative aspect-4/5 overflow-hidden">
-            {product.images[0] ? (
+            {mainImage ? (
               <Image
-                src={product.images[0]}
+                src={mainImage}
                 alt={product.name}
                 fill
                 className="object-fit transition-transform duration-500 group-hover:scale-105"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                unoptimized // Añadimos esto para evitar problemas de optimización de Netlify con URLs externas
               />
             ) : (
               <div className="w-full h-full bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center">

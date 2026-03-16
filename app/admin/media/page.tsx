@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import {
   Upload,
@@ -34,31 +34,31 @@ const MediaPage = () => {
     setTimeout(() => setNotification(null), 3000);
   };
 
-  const fetchImages = async () => {
+  // ✅ fetchImages memorizada para evitar errores de dependencias
+  const fetchImages = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       const res = await fetch("/api/media");
       
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || `HTTP ${res.status}`);
+        throw new Error(`HTTP ${res.status}`);
       }
       
       const data = await res.json();
       setImages(Array.isArray(data) ? data : []);
-    } catch (err: any) {
-      console.error("❌ Failed to fetch images:", err);
-      setError(err.message || "Ett okänt fel inträffade");
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Ett okänt fel inträffade";
+      setError(errorMsg);
       showNotification("Misslyckades med att ladda bilder", "error");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchImages();
-  }, []);
+  }, [fetchImages]);
 
   const handleCopyUrl = (url: string) => {
     navigator.clipboard.writeText(url);
@@ -75,24 +75,49 @@ const MediaPage = () => {
         body: JSON.stringify({ name }),
       });
 
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || "Misslyckades med att ta bort bild");
-      }
+      if (!res.ok) throw new Error("Misslyckades med att ta bort bild");
 
       setImages(prev => prev.filter((img) => img.name !== name));
       showNotification("Bilden togs bort framgångsrikt!", "success");
-    } catch (err: any) {
-      console.error("❌ Delete error:", err);
-      showNotification(err.message || "Ett fel inträffade", "error");
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Ett fel inträffade";
+      showNotification(errorMsg, "error");
     }
+  };
+
+  const uploadFiles = async (files: File[]) => {
+    setUploading(true);
+
+    for (const file of files) {
+      if (!file.type.startsWith("image/")) {
+        showNotification(`Hoppade över: ${file.name} (inte en bild)`, "error");
+        continue;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const res = await fetch("/api/media", { method: "POST", body: formData });
+        
+        if (!res.ok) throw new Error("Misslyckades med att ladda upp");
+
+        const newImage = await res.json();
+        setImages(prev => [newImage, ...prev]);
+        showNotification(`${file.name} har laddats upp!`, "success");
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : "Ett fel inträffade vid uppladdning";
+        showNotification(errorMsg, "error");
+      }
+    }
+    setUploading(false);
   };
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files?.length) {
       await uploadFiles(Array.from(files));
-      event.target.value = ""; // Reset input
+      event.target.value = ""; 
     }
   };
 
@@ -111,37 +136,6 @@ const MediaPage = () => {
     }
   };
 
-  const uploadFiles = async (files: File[]) => {
-    setUploading(true);
-
-    for (const file of files) {
-      if (!file.type.startsWith("image/")) {
-        showNotification(`Hoppade över: ${file.name}`, "error");
-        continue;
-      }
-
-      const formData = new FormData();
-      formData.append("file", file);
-
-      try {
-        const res = await fetch("/api/media", { method: "POST", body: formData });
-        
-        if (!res.ok) {
-          const errorData = await res.json().catch(() => ({}));
-          throw new Error(errorData.error || "Misslyckades med att ladda upp");
-        }
-
-        const newImage = await res.json();
-        setImages(prev => [newImage, ...prev]);
-        showNotification(`${file.name} uppladdad!`, "success");
-      } catch (err: any) {
-        console.error("❌ Upload error:", err);
-        showNotification(err.message || "Ett fel inträffade", "error");
-      }
-    }
-    setUploading(false);
-  };
-
   return (
     <div className="container mx-auto min-h-screen p-6">
       <button 
@@ -153,7 +147,7 @@ const MediaPage = () => {
 
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Mediebibliotek</h1>
-        <p className="text-gray-600 mt-2">Ladda upp och hantera dina bilder</p>
+        <p className="text-gray-600 mt-2">Ladda upp och hantera dina bilder för duddallos</p>
       </div>
 
       {/* Upload Zone */}

@@ -132,10 +132,6 @@ export default function ProductCard({ product }: { product: Product }) {
   };
 
   const mainImage = getImageUrl(product.images[0]);
-  console.log("Ruta de imagen procesada:", mainImage);
-  console.log("DEBUG - Producto:", product.name);
-console.log("DEBUG - Imagen original de Mongo:", product.images[0]);
-console.log("DEBUG - URL transformada para Supabase:", mainImage);
 
   return (
     <>

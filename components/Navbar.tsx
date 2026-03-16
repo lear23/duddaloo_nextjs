@@ -58,7 +58,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="text-xl font-bold">
           <Image
-            src="/logoduddaloo.svg"
+            src="/Logoduddaloo.svg"
             alt="affars logo"
             width={80}
             height={80}

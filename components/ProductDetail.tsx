@@ -7,6 +7,9 @@ import { useRouter } from "next/navigation";
 import { useCartId } from "@/lib/cartUtils";
 import ErrorModal from "./ErrorModal";
 
+// ✅ Definimos la URL de tu Supabase
+const BUCKET_URL = "https://sszyfwfazrxewdarezbn.supabase.co/storage/v1/object/public/duddallos_products/";
+
 interface Product {
   _id: string;
   name: string;
@@ -32,10 +35,17 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
+  // ✅ Función para limpiar la URL de la imagen
+  const getImageUrl = (imagePath: string) => {
+    if (!imagePath) return "";
+    if (imagePath.startsWith('http')) return imagePath;
+    const fileName = imagePath.split('/').pop();
+    return `${BUCKET_URL}${fileName}`;
+  };
+
   const addToCart = async () => {
     if (!cartId || !product.inStock) return;
 
-    // Validera att en storlek har valts om det krävs
     if (product.sizes && product.sizes.length > 0 && !selectedSize) {
       setErrorMessage(
         "Vänligen välj en storlek innan du lägger till i varukorgen",
@@ -71,7 +81,6 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
   return (
     <div className="min-h-screen bg-white relative">
-      {/* CENTRERAD FRAMGÅNGSMODAL */}
       {showSuccessModal && (
         <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center relative animate-in zoom-in-95 duration-300">
@@ -120,12 +129,13 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             <div className="relative aspect-square overflow-hidden rounded-2xl bg-white mb-4">
               {product.images && product.images[selectedImage] ? (
                 <Image
-                  src={product.images[selectedImage]}
+                  src={getImageUrl(product.images[selectedImage])}
                   alt={product.name}
                   fill
                   className="object-contain"
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   priority
+                  unoptimized // ✅ Importante para evitar problemas de caché de imagen en Netlify
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-gray-100 to-gray-200">
@@ -147,11 +157,12 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                     }`}
                   >
                     <Image
-                      src={image}
+                      src={getImageUrl(image)}
                       alt={`${product.name} vy ${index + 1}`}
                       fill
                       className="object-cover"
                       sizes="100px"
+                      unoptimized // ✅
                     />
                   </button>
                 ))}
@@ -257,7 +268,6 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 </div>
               </div>
 
-              {/* 🔥 SECCIÓN MEJORADA 1: Productspecifikationer med gröna ikoner */}
               <div className="bg-gray-50 rounded-xl p-4 space-y-2 border border-gray-100">
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5 text-green-600">
@@ -303,7 +313,6 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 </button>
               </div>
 
-              {/* 🔥 SECCIÓN MEJORADA 2: Leveransinformation med gröna ikoner */}
               <div className="bg-gray-50 rounded-xl p-4 space-y-2 border border-gray-100">
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5 text-green-600">

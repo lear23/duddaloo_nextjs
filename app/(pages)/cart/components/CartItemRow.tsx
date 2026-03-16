@@ -19,17 +19,20 @@ export default function CartItemRow({
     <div className="p-4 md:p-6 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors">
       <div className="flex gap-4 md:gap-6">
         {/* Imagen */}
-        <div className="relative w-20 h-20 md:w-28 md:h-28 shrink-0">
-          <div className="relative w-full h-full overflow-hidden rounded-xl border border-gray-200">
-            <Image
-              src={item.image}
-              alt={item.name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 80px, 112px"
-            />
-          </div>
+      <div className="relative w-20 h-20 md:w-28 md:h-28 shrink-0">
+        <div className="relative w-full h-full overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+          <Image
+            src={item.image} // La URL que viene de Supabase
+            alt={item.name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 80px, 112px"
+            priority={true} // Carga la imagen de inmediato (crítico para el carrito)
+            unoptimized={true} // Úsalo si Supabase ya te da la imagen en el tamaño correcto o si tienes problemas de cuotas con Next.js Optimizer
+            // loader={supabaseLoader} // Opcional: si quieres optimizar vía URL de Supabase
+          />
         </div>
+      </div>
 
         <div className="flex-1">
           {/* MOBILE LAYOUT */}

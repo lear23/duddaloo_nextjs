@@ -47,14 +47,24 @@ export default function ProductCard({ product }: { product: Product }) {
   const [categories, setCategories] = useState<Category[]>([]);
 
   // Lógica para determinar la URL de la imagen (Supabase o Local)
-  const getImageUrl = (imagePath: string) => {
-    if (!imagePath) return null;
-    // Si ya es una URL completa (http...), la usamos tal cual
-    if (imagePath.startsWith('http')) return imagePath;
-    // Si es una ruta de /uploads/, extraemos solo el nombre del archivo y le ponemos la URL de Supabase
-    const fileName = imagePath.split('/').pop();
-    return `${BUCKET_URL}${fileName}`;
-  };
+ const getImageUrl = (imagePath: any) => {
+  if (!imagePath) return "";
+  
+  // Convertimos a string por si acaso viene algo raro de Mongo
+  const path = String(imagePath);
+
+  // Si ya es una URL de Supabase, la dejamos pasar
+  if (path.startsWith('http')) return path;
+  
+  // Extraemos el nombre del archivo (ej: "Melle1web.png")
+  const fileName = path.split('/').pop()?.trim();
+  
+  // IMPORTANTE: Asegúrate de que BUCKET_URL termine en "/"
+  const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const BUCKET_URL = `${SUPABASE_URL}/storage/v1/object/public/duddallos_products/`;
+  
+  return `${BUCKET_URL}${fileName}`;
+};
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -123,6 +133,9 @@ export default function ProductCard({ product }: { product: Product }) {
 
   const mainImage = getImageUrl(product.images[0]);
   console.log("Ruta de imagen procesada:", mainImage);
+  console.log("DEBUG - Producto:", product.name);
+console.log("DEBUG - Imagen original de Mongo:", product.images[0]);
+console.log("DEBUG - URL transformada para Supabase:", mainImage);
 
   return (
     <>

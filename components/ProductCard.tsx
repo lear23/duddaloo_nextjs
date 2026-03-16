@@ -118,6 +118,7 @@ export default function ProductCard({ product }: { product: Product }) {
   };
 
   const mainImage = getImageUrl(product.images[0]);
+  console.log("Ruta de imagen procesada:", mainImage);
 
   return (
     <>

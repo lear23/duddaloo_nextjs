@@ -7,8 +7,11 @@ import { useRouter } from "next/navigation";
 import { useCartId } from "@/lib/cartUtils";
 import ErrorModal from "./ErrorModal";
 
-// ✅ Definimos la URL de tu Supabase
-const BUCKET_URL = "https://sszyfwfazrxewdarezbn.supabase.co/storage/v1/object/public/duddallos_products/";
+// 1. Obtenemos la URL base de Supabase desde las variables de entorno que ya tienes en Netlify
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+// 2. Construimos la ruta del bucket (esto no es secreto, es solo organización)
+const BUCKET_URL = `${SUPABASE_URL}/storage/v1/object/public/duddallos_products/`;
 
 interface Product {
   _id: string;

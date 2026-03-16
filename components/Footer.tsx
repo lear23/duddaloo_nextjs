@@ -13,7 +13,7 @@ return (
         {/* Logo - Centrerado SOLO en móvil */}            
         <div className="flex flex-col items-center md:items-start w-full md:w-auto gap-4">
           <Image
-            src="https://sszyfwfazrxewdarezbn.supabase.co/storage/v1/object/public/duddallos_products/logoduddaloo.svg"
+            src="https://sszyfwfazrxewdarezbn.supabase.co/storage/v1/object/public/duddallos_products/Logoduddaloo.svg"
             alt="logo"
               width={180}
               height={180}

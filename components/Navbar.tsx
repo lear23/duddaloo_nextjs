@@ -128,7 +128,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center p-6 border-b border-gray-100">
          <div className="w-16 h-16 relative">
         <Image
-          src="https://sszyfwfazrxewdarezbn.supabase.co/storage/v1/object/public/duddallos_products/logoduddaloo.svg"
+          src="https://sszyfwfazrxewdarezbn.supabase.co/storage/v1/object/public/duddallos_products/Logoduddaloo.svg"
           alt="logo"
           width={80}
           height={80}

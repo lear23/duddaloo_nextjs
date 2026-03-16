@@ -10,21 +10,22 @@ return (
     <footer className="bg-[#F8F6F2] py-12">
       <div className="max-w-6xl mx-auto px-4 md:px-8 flex flex-col md:flex-row justify-between items-start gap-8">
        
-        {/* Logo - Centrerado SOLO en móvil */}
+        {/* Logo - Centrerado SOLO en móvil */}            
         <div className="flex flex-col items-center md:items-start w-full md:w-auto gap-4">
           <Image
-            src="/logoduddaloo.svg"
-            alt="affars logo"
-            width={180}
-            height={180}
-            priority
-          />       
-        </div>       
+            src="https://sszyfwfazrxewdarezbn.supabase.co/storage/v1/object/public/duddallos_products/logoduddaloo.svg"
+            alt="logo"
+              width={180}
+              height={180}
+            className="object-contain"
+            unoptimized // Añade esto para que Next.js no intente procesar el SVG/URL externa
+          />
+        </div>
        
         <div className="flex flex-col items-center md:items-start w-full md:w-auto gap-2">
           <h3 className="font-semibold text-lg mb-2">Company</h3>
           <Link className="text-gray-400" href="/">Home</Link>
-          <Link className="text-gray-400"href="/products">Shop</Link>
+          <Link className="text-gray-400"href="/shop">Shop</Link>
           <Link className="text-gray-400" href="/about">About</Link>
           <Link className="text-gray-400" href="/contact">Contact</Link>
         </div>    

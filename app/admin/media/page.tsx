@@ -35,26 +35,28 @@ const MediaPage = () => {
   };
 
   // ✅ fetchImages memorizada para evitar errores de dependencias
-  const fetchImages = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const res = await fetch("/api/media");
-      
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
-      
-      const data = await res.json();
-      setImages(Array.isArray(data) ? data : []);
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Ett okänt fel inträffade";
-      setError(errorMsg);
-      showNotification("Misslyckades med att ladda bilder", "error");
-    } finally {
-      setLoading(false);
+// En tu archivo app/admin/media/page.tsx
+const fetchImages = useCallback(async () => {
+  try {
+    setLoading(true);
+    const res = await fetch("/api/media");
+    const data = await res.json();
+    
+    if (!res.ok) {
+       // Esto te dirá el error real que devuelve el servidor
+       console.error("DETALLE DEL ERROR:", data.error);
+       setError(`Error: ${data.error}`);
+       return;
     }
-  }, []);
+    
+    setImages(data);
+  } catch (err) {
+    console.error("ERROR DE RED:", err);
+    setError("Kunde inte ansluta till servern");
+  } finally {
+    setLoading(false);
+  }
+}, []);
 
   useEffect(() => {
     fetchImages();

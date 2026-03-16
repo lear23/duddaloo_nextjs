@@ -17,10 +17,16 @@ export default function CartItemRow({
 }: Props) {
   const itemKey = `${item.productId}-${item.size || "no-size"}`;
 
-  // URL corregida con tu ID de Supabase
+  // 🛠️ CONFIGURACIÓN REAL DE SUPABASE (CON TUS DATOS)
+  const projectId = "sszyfwfazrxewdarezbn";
+  const bucket = "uploads"; 
+
+  // Limpiamos la ruta para evitar el error 400 y barras dobles
+  const cleanImagePath = item.image.replace(/^\/?uploads\//, "");
+  
   const imageUrl = item.image.startsWith('http') 
     ? item.image 
-    : `https://sszyfwfazrxewdarezbn.supabase.co/storage/v1/object/public/uploads/${item.image.replace(/^\//, '')}`;
+    : `https://${projectId}.supabase.co/storage/v1/object/public/${bucket}/${cleanImagePath}`;
 
   return (
     <div className="p-4 md:p-6 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors">
@@ -35,6 +41,7 @@ export default function CartItemRow({
               className="object-cover"
               sizes="(max-width: 768px) 80px, 112px"
               priority
+              unoptimized={true} // Esto evita que Vercel intente procesar la imagen y falle con 400
             />
           </div>
         </div>
@@ -87,8 +94,7 @@ export default function CartItemRow({
 
                 <button
                   onClick={() => updateQuantity(item.productId, item.quantity + 1, item.size)}
-                  // Corregido error de TypeScript (usando !! para forzar boolean)
-                  disabled={updatingItem === itemKey || (!!item.stock && item.quantity >= item.stock)}
+                  disabled={updatingItem === itemKey || (typeof item.stock === 'number' && item.quantity >= item.stock)}
                   className="w-9 h-9 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg disabled:opacity-50"
                 >
                   <Plus className="w-4 h-4" />
@@ -151,8 +157,7 @@ export default function CartItemRow({
 
                 <button
                   onClick={() => updateQuantity(item.productId, item.quantity + 1, item.size)}
-                  // Corregido error de TypeScript (usando !! para forzar boolean)
-                  disabled={updatingItem === itemKey || (!!item.stock && item.quantity >= item.stock)}
+                  disabled={updatingItem === itemKey || (typeof item.stock === 'number' && item.quantity >= item.stock)}
                   className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg disabled:opacity-50"
                 >
                   <Plus className="w-4 h-4" />

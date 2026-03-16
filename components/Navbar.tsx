@@ -69,7 +69,7 @@ export default function Navbar() {
         {/* Links de navegación - Ocultos en móvil, visibles en desktop */}
         <div className="hidden md:flex gap-4">
           <Link href="/" className="hover:text-gray-600 transition">Home</Link>
-          <Link href="/products" className="hover:text-gray-600 transition">Shop</Link>
+          <Link href="/shop" className="hover:text-gray-600 transition">Shop</Link>
           <Link href="/about" className="hover:text-gray-600 transition">About</Link>
           <Link href="/contact" className="hover:text-gray-600 transition">Contact</Link>
         </div>
@@ -126,15 +126,16 @@ export default function Navbar() {
       `}>
         {/* Header del menú con logo pequeño y X */}
         <div className="flex justify-between items-center p-6 border-b border-gray-100">
-          <div className="w-16 h-16 relative">
-            <Image
-              src="/logoduddaloo.svg"
-              alt="logo"
-              width={80}
-              height={80}
-              className="object-contain"
-            />
-          </div>
+         <div className="w-16 h-16 relative">
+        <Image
+          src="https://sszyfwfazrxewdarezbn.supabase.co/storage/v1/object/public/duddallos_products/logoduddaloo.svg"
+          alt="logo"
+          width={80}
+          height={80}
+          className="object-contain"
+          unoptimized // Añade esto para que Next.js no intente procesar el SVG/URL externa
+        />
+      </div>
           <button 
             onClick={() => setIsMenuOpen(false)}
             className="p-2 hover:bg-gray-100 rounded-full transition"
@@ -154,7 +155,7 @@ export default function Navbar() {
             Home
           </Link>
           <Link 
-            href="/products" 
+            href="/shop" 
             className="text-right text-xl py-4 px-6 hover:bg-gray-100 rounded-xl transition-all hover:scale-105"
             onClick={handleLinkClick}
           >
